@@ -1,6 +1,6 @@
 [project]
 name = "image-tools-stackabletech"
-version = "0.0.1-dev"
+version = "0.0.1"
 authors = [
     { name = "Razvan Mihai", email = "razvan.mihai@stackable.tech" }
 ]

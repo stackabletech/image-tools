@@ -36,7 +36,6 @@ Following tools are installed:
 Update the version in:
 
 * `pyproject.toml`
-* `version.py`
 * `README.md` : version and pip install command.
 
 Update the CHANGELOG.
