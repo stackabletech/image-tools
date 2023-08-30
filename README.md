@@ -1,6 +1,6 @@
 # image-tools
 
-Version: 0.0.1
+Version: 0.0.2
 
 ## Installation
 
@@ -43,5 +43,5 @@ Commit and tag.
 Build and publish:
 
     rm -rf dist/
-    python -m build --wheel .
+    python -m build --sdist --wheel .
     twine upload dist/*
