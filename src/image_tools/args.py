@@ -53,6 +53,12 @@ def bake_args() -> Namespace:
         help="Image registry to publish to. Default: docker.stackable.tech",
         default="docker.stackable.tech",
     )
+    parser.add_argument(
+        "-v",
+        "--product-version",
+        help="Product version to build."
+    )
+
     return parser.parse_args()
 
 
@@ -146,9 +152,8 @@ def check_architecture_input(architecture) -> List[str]:
     supported_arch = ["linux/amd64", "linux/arm64"]
 
     if architecture not in supported_arch:
-        raise ValueError(
-            f"Architecture {architecture} not supported. Supported: {supported_arch}"
-        )
+        msg=f"Architecture {architecture} not supported. Supported: {supported_arch}"
+        raise ValueError(msg)
 
     return architecture
 

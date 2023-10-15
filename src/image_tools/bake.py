@@ -6,7 +6,7 @@ Usage:
 
     python -m image_tools.bake -p opa -i 22.12.0
 """
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 from argparse import Namespace
 from subprocess import run
 import json
@@ -31,11 +31,6 @@ def build_image_args(version, release_version):
         for k, v in version.items():
             result[k.upper()] = v
         result["RELEASE"] = release_version
-    elif isinstance(version, str) and isinstance(release_version, str):
-        {
-            "PRODUCT": version,
-            "RELEASE": release_version,
-        }
     else:
         raise ValueError(f"Unsupported version object: {version}")
 
@@ -43,7 +38,7 @@ def build_image_args(version, release_version):
 
 
 def build_image_tags(
-    image_name: str, image_version: str, product_version: str
+        image_name: str, image_version: str, product_version: str
 ) -> List[str]:
     """
     Returns a list of --tag command line arguments that are used by the
@@ -95,14 +90,14 @@ def bakefile_target_name_for_product_version(product_name: str, version: str) ->
     """
     Creates a normalized Bakefile target name for a given (product, version) combination.
     """
-    return f"{ product_name }-{ version.replace('.', '_') }"
+    return f"{product_name}-{version.replace('.', '_')}"
 
 
 def bakefile_product_version_targets(
-    args: Namespace,
-    product_name: str,
-    versions: Dict[str, str],
-    product_names: List[str],
+        args: Namespace,
+        product_name: str,
+        versions: Dict[str, str],
+        product_names: List[str],
 ):
     """
     Creates Bakefile targets defining how to build a given product version.
@@ -116,7 +111,7 @@ def bakefile_product_version_targets(
 
     return {
         bakefile_target_name_for_product_version(product_name, versions["product"]): {
-            "dockerfile": f"{ product_name }/Dockerfile",
+            "dockerfile": f"{product_name}/Dockerfile",
             "tags": tags,
             "args": build_args,
             "platforms": args.architecture,
@@ -159,11 +154,31 @@ def bake_command(args: Namespace, product_name: str, bakefile) -> Command:
     )
 
 
+def filter_product_version(conf, product_name: Optional[str], product_version: Optional[str]):
+    """ Filter product versions by the given product_version argument.
+        Mutates the "conf.products" array to remove version of "product_name" that don't match "product_version"
+    """
+    if product_version and product_name:
+        filtered_products = []
+        for product in conf.products:
+            if product["name"] == product_name:
+                for version_dict in product.get("versions", []):
+                    if version_dict["product"] == product_version:
+                        # Make a copy of the product and replace the "versions" array with the version that matched.
+                        filtered_product = product
+                        filtered_product["versions"] = [version_dict]
+                        filtered_products.append(filtered_product)
+            else:
+                filtered_products.append(product)
+        conf.products = filtered_products
+
+
 def main():
     """Generate a Docker bake file from conf.py and build the given args.product images."""
     args = bake_args()
 
     conf = load_configuration(args.configuration)
+    filter_product_version(conf, args.product, args.product_version)
 
     bakefile = generate_bakefile(args, conf)
 
