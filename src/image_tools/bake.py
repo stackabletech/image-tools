@@ -192,7 +192,8 @@ def filter_product_version(conf, product_name: Optional[str], product_version: O
 
 def bake_product_version(version: str, version_index: int, product_version: Optional[str],
                          product_version_quantile: Optional[int], max_bake_runners: int) -> bool:
-    """ Return True if `version` equals `product_version` of if it falls in the quantile specified by `product_version_quantile`
+    """ Return True if `version` equals `product_version` of if it falls in the quantile specified
+        by `product_version_quantile`
     """
     if product_version and version == product_version:
         return True
