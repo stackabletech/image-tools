@@ -6,7 +6,6 @@ Usage:
 
     python -m image_tools.bake -p opa -i 22.12.0
 """
-import sys
 from typing import List, Dict, Any, Optional
 from argparse import Namespace
 from subprocess import run
@@ -208,12 +207,13 @@ def main():
 
     conf = load_configuration(args.configuration)
     filtered_product_version_count = filter_product_version(conf, args.product, args.product_version,
-                                                   args.product_version_quantile,
-                                                   args.max_bake_runners)
+                                                            args.product_version_quantile,
+                                                            args.max_bake_runners)
     if filtered_product_version_count is not None:
         if filtered_product_version_count == 0:
-            logging.info(f"Nothing to bake for product [{args.product}]. Exiting.")
-            sys.exit(0)
+            logging.info(
+                f"Nothing to bake for product [{args.product}]. Exiting.")
+            return
 
     bakefile = generate_bakefile(args, conf)
 
