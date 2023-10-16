@@ -1,6 +1,6 @@
 # image-tools
 
-Version: 0.0.2
+Version: 0.0.3
 
 ## Installation
 
@@ -13,7 +13,7 @@ But you can also use `pip`:
     # from PyPI
     pip install image-tools-stackabletech
     # from GitHub
-    pip install git+https://github.com/stackabletech/image-tools.git@master
+    pip install git+https://github.com/stackabletech/image-tools.git@main
 
 ## Description
 
