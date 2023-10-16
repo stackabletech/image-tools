@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.0.3] - 2023-10-16
+
 ### Added
 
 - Allow `bake` product names to accept a version as suffix separated by "=" ([#2])
