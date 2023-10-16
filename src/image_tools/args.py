@@ -58,7 +58,7 @@ def bake_args() -> Namespace:
     )
     result = parser.parse_args()
 
-    if result.shard_index is not None and result.shard_index >= result.shard_count:
+    if result.shard_index >= result.shard_count:
         raise ValueError("shard index [{}] cannot be greater or equal than shard count [{}]".format(
             result.shard_index, result.shard_count))
     return result
