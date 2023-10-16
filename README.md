@@ -33,10 +33,10 @@ Following tools are installed:
     bake -p opa -i 0.0.0-dev --product-version 0.37.2
 
     # Build half of all versions defined for OPA
-    bake -p opa -i 0.0.0-dev  --max-bake-runners 2 --product-version-quantile 0
+    bake -p opa -i 0.0.0-dev  --shard-count 2 --shard-index 0
 
     # Build the other half of all versions defined for OPA
-    bake -p opa -i 0.0.0-dev  --max-bake-runners 2 --product-version-quantile 1
+    bake -p opa -i 0.0.0-dev  --shard-count 2 --shard-index 1
 
     # Run preflight checks on the hello-world container images
     check-container -p hello-world -i 0.0.0-dev
