@@ -29,9 +29,10 @@ def bake_args() -> Namespace:
         required=True,
         type=check_image_version_format,
     )
-    parser.add_argument("-p", "--product", help="Product to build images for", action='append')
-    parser.add_argument("--shard-count", type=int, default=1)
-    parser.add_argument("--shard-index", type=int, default=0)
+    parser.add_argument("-p", "--product",
+                        help="Product to build images for", action='append')
+    parser.add_argument("--shard-count", type=positive_int, default=1)
+    parser.add_argument("--shard-index", type=positive_int, default=0)
     parser.add_argument("-u", "--push", help="Push images",
                         action="store_true")
     parser.add_argument("-d", "--dry", help="Dry run.", action="store_true")
@@ -55,7 +56,23 @@ def bake_args() -> Namespace:
         help="Image registry to publish to. Default: docker.stackable.tech",
         default="docker.stackable.tech",
     )
-    return parser.parse_args()
+    result = parser.parse_args()
+
+    if result.shard_index is not None and result.shard_index >= result.shard_count:
+        raise ValueError("shard index [{}] cannot be greater or equal than shard count [{}]".format(
+            result.shard_index, result.shard_count))
+    return result
+
+
+def positive_int(value) -> int:
+    try:
+        ivalue = int(value)
+        if ivalue < 0:
+            raise ValueError
+        return ivalue
+    except ValueError:
+        raise ValueError(
+            f"Invalid value [{value}]. Must be an integer greater than or equal to zero.")
 
 
 def check_image_version_format(image_version) -> str:
