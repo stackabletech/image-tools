@@ -27,9 +27,16 @@ Following tools are installed:
 ## Examples
 
     # Build images of the hello-world containers
-    bake -p hello-world -i 0.0.0-dev --organization sandbox
-    # Run preflight checks on the hello-world container images
-    check-container -p hello-world -i 0.0.0-dev
+    bake -p hello-world -i 0.0.0-dev
+
+    # Build only one version [0.37.2] of OPA
+    bake -p opa=0.37.2 -i 0.0.0-dev
+
+    # Build half of all versions defined for OPA
+    bake -p opa -i 0.0.0-dev  --shard-count 2 --shard-index 0
+
+    # Build the other half of all versions defined for OPA
+    bake -p opa -i 0.0.0-dev  --shard-count 2 --shard-index 1
 
 ## Release a new version
 
