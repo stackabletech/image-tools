@@ -26,7 +26,7 @@ def bake_args() -> Namespace:
         "-i",
         "--image-version",
         help="Image version",
-        required=True,
+        default='0.0.0-dev',
         type=check_image_version_format,
     )
     parser.add_argument("-p", "--product",
