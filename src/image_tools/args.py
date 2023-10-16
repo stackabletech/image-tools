@@ -65,7 +65,8 @@ def bake_args() -> Namespace:
     )
     parser.add_argument(
         "--shard-count",
-        help="Split the build into N shards, which can be built separately. All shards must be built separately, by specifying the --shard-index argument.",
+        help="Split the build into N shards, which can be built separately. All shards must be built separately, \
+        by specifying the --shard-index argument.",
         type=positive_int,
         default=1,
     )
@@ -79,15 +80,14 @@ def bake_args() -> Namespace:
 
 
 def positive_int(value) -> int:
-    ivalue = 0
     try:
         ivalue = int(value)
+        if ivalue < 0:
+            raise ValueError
+        return ivalue
     except ValueError:
-        raise ValueError(f"Invalid value [{value}]. Must be an integer greater or equal to zero.")
-
-    if ivalue < 0:
-        raise ValueError("Invalid value [{value}]. Must be an integer greater than or equal to zero.")
-    return ivalue
+        raise ValueError(
+            f"Invalid value [{value}]. Must be an integer greater than or equal to zero.")
 
 
 def check_image_version_format(image_version) -> str:
