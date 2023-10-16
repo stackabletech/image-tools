@@ -69,7 +69,7 @@ def bake_args() -> Namespace:
         "--max-bake-runners",
         help="Max bake runners.",
         type=positive_int,
-        default=5,
+        default=1,
     )
 
     result = parser.parse_args()
