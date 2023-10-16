@@ -6,11 +6,13 @@ Usage:
 
     python -m image_tools.bake -p opa -i 22.12.0
 """
+import sys
 from typing import List, Dict, Any, Optional
 from argparse import Namespace
 from subprocess import run
 import json
 import re
+import logging
 
 from image_tools.lib import Command
 from image_tools.args import bake_args, load_configuration
@@ -154,38 +156,73 @@ def bake_command(args: Namespace, product_name: str, bakefile) -> Command:
     )
 
 
-def filter_product_version(conf, product_name: Optional[str], product_version: Optional[str]):
+def filter_product_version(conf, product_name: Optional[str], product_version: Optional[str],
+                           product_version_quantile: Optional[int], max_bake_runners: int) -> Optional[int]:
     """ Filter product versions by the given product_version argument.
         Mutates the "conf.products" array to remove version of "product_name" that don't match "product_version"
+
+        Returns the number of product versions to build.
     """
-    if product_version and product_name:
+    result = None
+    if product_name and (
+            product_version or str(product_version_quantile)):  # str() is hack for the case when the quantile is 0
         filtered_products = []
         for product in conf.products:
             if product["name"] == product_name:
-                for version_dict in product.get("versions", []):
-                    if version_dict["product"] == product_version:
-                        # Make a copy of the product and replace the "versions" array with the version that matched.
-                        filtered_product = product
-                        filtered_product["versions"] = [version_dict]
-                        filtered_products.append(filtered_product)
+                filtered_product_versions = []
+                for index, version_dict in enumerate(product.get("versions", [])):
+                    if bake_product_version(version_dict["product"], index, product_version, product_version_quantile,
+                                            max_bake_runners):
+                        filtered_product_versions.append(version_dict)
+                # Stop early
+                #if not len(filtered_product_versions):
+                #    logging.info(f"No version to build for product {product_name}")
+                # Make a copy of the product and replace the "versions" array with the version that matched.
+                filtered_product = product
+                filtered_product["versions"] = filtered_product_versions
+                filtered_products.append(filtered_product)
+                result = len(filtered_product_versions)
+                logging.info("Baking product [%s], versions : [%s]", product_name,
+                             ", ".join([v["product"] for v in filtered_product_versions]))
             else:
                 filtered_products.append(product)
         conf.products = filtered_products
+        return result
+
+
+def bake_product_version(version: str, version_index: int, product_version: Optional[str],
+                         product_version_quantile: Optional[int], max_bake_runners: int) -> bool:
+    """ Return True if `version` equals `product_version` of if it falls in the quantile specified by `product_version_quantile`
+    """
+    if product_version and version == product_version:
+        return True
+    if product_version_quantile is not None:
+        if product_version_quantile == version_index % max_bake_runners:
+            return True
+    return False
 
 
 def main():
     """Generate a Docker bake file from conf.py and build the given args.product images."""
+    logging.basicConfig(encoding="utf-8", level=logging.INFO)
+
     args = bake_args()
 
     conf = load_configuration(args.configuration)
-    filter_product_version(conf, args.product, args.product_version)
+    filtered_product_version_count = filter_product_version(conf, args.product, args.product_version,
+                                                   args.product_version_quantile,
+                                                   args.max_bake_runners)
+    if filtered_product_version_count is not None:
+        if filtered_product_version_count == 0:
+            logging.info(f"Nothing to bake for product [{args.product}]. Exiting.")
+            sys.exit(0)
 
     bakefile = generate_bakefile(args, conf)
 
     cmd = bake_command(args, args.product, bakefile)
 
     if args.dry:
-        print(cmd)
+        logging.debug(cmd)
     else:
         run(cmd.args, input=cmd.input, check=True)
 

@@ -56,10 +56,40 @@ def bake_args() -> Namespace:
     parser.add_argument(
         "-v",
         "--product-version",
-        help="Product version to build."
+        help="Product version to bake."
+    )
+    parser.add_argument(
+        "-q",
+        "--product-version-quantile",
+        help="An int representing the n-th quantile of max-bake-runners.",
+        type=positive_int,
+    )
+    parser.add_argument(
+        "-m",
+        "--max-bake-runners",
+        help="Max bake runners.",
+        type=positive_int,
+        default=5,
     )
 
-    return parser.parse_args()
+    result = parser.parse_args()
+
+    if result.product_version_quantile is not None and result.product_version_quantile >= result.max_bake_runners:
+        raise ValueError("product-version-quantile [{}] cannot be greater or equal than max-bake-runners [{}]".format(
+            result.product_version_quantile, result.max_bake_runners))
+    return result
+
+
+def positive_int(value) -> int:
+    ivalue = 0
+    try:
+        ivalue = int(value)
+    except ValueError:
+        raise ValueError(f"Invalid value [{value}]. Must be an integer greater or equal to zero.")
+
+    if ivalue < 0:
+        raise ValueError("Invalid value [{value}]. Must be an integer greater or equal to zero.")
+    return ivalue
 
 
 def check_image_version_format(image_version) -> str:

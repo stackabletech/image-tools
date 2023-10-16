@@ -26,8 +26,18 @@ Following tools are installed:
 
 ## Examples
 
-    # Build images of the hello-world containers
-    bake -p hello-world -i 0.0.0-dev --organization sandbox
+    # Build all image versions of the hello-world product
+    bake -p hello-world -i 0.0.0-dev
+
+    # Build only one version [0.37.2] of OPA
+    bake -p opa -i 0.0.0-dev --product-version 0.37.2
+
+    # Build half of all versions defined for OPA
+    bake -p opa -i 0.0.0-dev  --max-bake-runners 2 --product-version-quantile 0
+
+    # Build the other half of all versions defined for OPA
+    bake -p opa -i 0.0.0-dev  --max-bake-runners 2 --product-version-quantile 1
+
     # Run preflight checks on the hello-world container images
     check-container -p hello-world -i 0.0.0-dev
 
