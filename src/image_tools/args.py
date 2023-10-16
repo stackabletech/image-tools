@@ -65,9 +65,8 @@ def bake_args() -> Namespace:
         type=positive_int,
     )
     parser.add_argument(
-        "-m",
-        "--max-bake-runners",
-        help="Max bake runners.",
+        "--shard-count",
+        help="Split the build into N shards, which can be built separately. All shards must be built separately, by specifying the --shard-index argument.",
         type=positive_int,
         default=1,
     )
