@@ -134,11 +134,13 @@ def targets_for_selector(conf, selected_products: List[str]) -> List[str]:
     targets = []
     for selected_product in selected_products or (product['name'] for product in conf.products):
         product_name, *versions = selected_product.split("=")
-        product = next((product for product in conf.products if product['name'] == product_name), None)
+        product = next(
+            (product for product in conf.products if product['name'] == product_name), None)
         if product is None:
             raise ValueError(f"Requested unknown product [{product_name}]")
         for version in versions or (version['product'] for version in product['versions']):
-            targets.append(bakefile_target_name_for_product_version(product_name, version))
+            targets.append(bakefile_target_name_for_product_version(
+                product_name, version))
     return targets
 
 
@@ -161,9 +163,9 @@ def bake_command(args: Namespace, targets: List[str], bakefile) -> Command:
     else:
         target_mode = []
 
-    if not targets:
-        print("No targets match this filter")
-        return
+    if args.dry:
+        target_mode = ["--print"]
+
     return Command(
         args=[
             "docker",
@@ -186,13 +188,17 @@ def main():
 
     bakefile = generate_bakefile(args, conf)
 
-    targets = filter_targets_for_shard(targets_for_selector(conf, args.product), args.shard_count, args.shard_index)
-    cmd = bake_command(args, targets, bakefile)
+    targets = filter_targets_for_shard(targets_for_selector(
+        conf, args.product), args.shard_count, args.shard_index)
 
+    if not targets:
+        print("No targets match this filter")
+        return
+
+    cmd = bake_command(args, targets, bakefile)
     if args.dry:
-        print(cmd)
-    else:
-        run(cmd.args, input=cmd.input, check=True)
+        print(" ".join(cmd.args))
+    run(cmd.args, input=cmd.input, check=True)
 
 
 if __name__ == "__main__":
