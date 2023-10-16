@@ -59,9 +59,8 @@ def bake_args() -> Namespace:
         help="Product version to bake."
     )
     parser.add_argument(
-        "-q",
-        "--product-version-quantile",
-        help="An int representing the n-th quantile of max-bake-runners.",
+        "--shard-index",
+        help="Build shard number M out of --shard-count. Shards are zero-indexed.",
         type=positive_int,
     )
     parser.add_argument(
