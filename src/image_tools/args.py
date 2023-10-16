@@ -73,9 +73,9 @@ def bake_args() -> Namespace:
 
     result = parser.parse_args()
 
-    if result.product_version_quantile is not None and result.product_version_quantile >= result.max_bake_runners:
+    if result.shard_index is not None and result.shard_index >= result.shard_count:
         raise ValueError("product-version-quantile [{}] cannot be greater or equal than max-bake-runners [{}]".format(
-            result.product_version_quantile, result.max_bake_runners))
+            result.shard_index, result.shard_count))
     return result
 
 

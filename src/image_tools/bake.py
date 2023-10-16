@@ -156,7 +156,7 @@ def bake_command(args: Namespace, product_name: str, bakefile) -> Command:
 
 
 def filter_product_version(conf, product_name: Optional[str], product_version: Optional[str],
-                           product_version_quantile: Optional[int], max_bake_runners: int) -> Optional[int]:
+                           shard_index: Optional[int], shard_count: int) -> Optional[int]:
     """ Filter product versions by the given product_version argument.
         Mutates the "conf.products" array to remove version of "product_name" that don't match "product_version"
 
@@ -164,14 +164,14 @@ def filter_product_version(conf, product_name: Optional[str], product_version: O
     """
     result = None
     if product_name and (
-            product_version or str(product_version_quantile)):  # str() is hack for the case when the quantile is 0
+            product_version or str(shard_index)):  # str() is hack for the case when the quantile is 0
         filtered_products = []
         for product in conf.products:
             if product["name"] == product_name:
                 filtered_product_versions = []
                 for index, version_dict in enumerate(product.get("versions", [])):
-                    if bake_product_version(version_dict["product"], index, product_version, product_version_quantile,
-                                            max_bake_runners):
+                    if bake_product_version(version_dict["product"], index, product_version, shard_index,
+                                            shard_count):
                         filtered_product_versions.append(version_dict)
                 # Make a copy of the product and replace the "versions" array with the version that matched.
                 filtered_product = product
@@ -187,14 +187,13 @@ def filter_product_version(conf, product_name: Optional[str], product_version: O
 
 
 def bake_product_version(version: str, version_index: int, product_version: Optional[str],
-                         product_version_quantile: Optional[int], max_bake_runners: int) -> bool:
-    """ Return True if `version` equals `product_version` of if it falls in the quantile specified
-        by `product_version_quantile`
+                         shard_index: Optional[int], shard_count: int) -> bool:
+    """ Return True if `version` equals `product_version` of if it falls in the quantile specified by `shard-count`
     """
     if product_version and version == product_version:
         return True
-    if product_version_quantile is not None:
-        if product_version_quantile == version_index % max_bake_runners:
+    if shard_index is not None:
+        if shard_index == version_index % shard_count:
             return True
     return False
 
@@ -207,8 +206,8 @@ def main():
 
     conf = load_configuration(args.configuration)
     filtered_product_version_count = filter_product_version(conf, args.product, args.product_version,
-                                                            args.product_version_quantile,
-                                                            args.max_bake_runners)
+                                                            args.shard_index,
+                                                            args.shard_count)
     if filtered_product_version_count is not None:
         if filtered_product_version_count == 0:
             logging.info(
