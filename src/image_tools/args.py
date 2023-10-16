@@ -29,7 +29,9 @@ def bake_args() -> Namespace:
         required=True,
         type=check_image_version_format,
     )
-    parser.add_argument("-p", "--product", help="Product to build images for")
+    parser.add_argument("-p", "--product", help="Product to build images for", action='append')
+    parser.add_argument("--shard-count", type=int, default=1)
+    parser.add_argument("--shard-index", type=int, default=0)
     parser.add_argument("-u", "--push", help="Push images",
                         action="store_true")
     parser.add_argument("-d", "--dry", help="Dry run.", action="store_true")
