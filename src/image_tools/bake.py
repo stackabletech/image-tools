@@ -130,7 +130,25 @@ def bakefile_product_version_targets(
     }
 
 
-def bake_command(args: Namespace, product_name: str, bakefile) -> Command:
+def targets_for_selector(conf, selected_products: List[str]) -> List[str]:
+    targets = []
+    for selected_product in selected_products or (product['name'] for product in conf.products):
+        product_name, *versions = selected_product.split("=")
+        product = next(
+            (product for product in conf.products if product['name'] == product_name), None)
+        if product is None:
+            raise ValueError(f"Requested unknown product [{product_name}]")
+        for version in versions or (version['product'] for version in product['versions']):
+            targets.append(bakefile_target_name_for_product_version(
+                product_name, version))
+    return targets
+
+
+def filter_targets_for_shard(targets: List[str], shard_count: int, shard_index: int) -> List[str]:
+    return [target for i, target in enumerate(targets) if i % shard_count == shard_index]
+
+
+def bake_command(args: Namespace, targets: List[str], bakefile) -> Command:
     """
     Returns a list of commands that need to be run in order to build and
     publish product images.
@@ -145,6 +163,9 @@ def bake_command(args: Namespace, product_name: str, bakefile) -> Command:
     else:
         target_mode = []
 
+    if args.dry:
+        target_mode = ["--print"]
+
     return Command(
         args=[
             "docker",
@@ -152,7 +173,7 @@ def bake_command(args: Namespace, product_name: str, bakefile) -> Command:
             "bake",
             "--file",
             "-",
-            *([] if product_name is None else [product_name]),
+            *targets,
             *target_mode,
         ],
         stdin=json.dumps(bakefile),
@@ -167,12 +188,17 @@ def main():
 
     bakefile = generate_bakefile(args, conf)
 
-    cmd = bake_command(args, args.product, bakefile)
+    targets = filter_targets_for_shard(targets_for_selector(
+        conf, args.product), args.shard_count, args.shard_index)
 
+    if not targets:
+        print("No targets match this filter")
+        return
+
+    cmd = bake_command(args, targets, bakefile)
     if args.dry:
-        print(cmd)
-    else:
-        run(cmd.args, input=cmd.input, check=True)
+        print(" ".join(cmd.args))
+    run(cmd.args, input=cmd.input, check=True)
 
 
 if __name__ == "__main__":
