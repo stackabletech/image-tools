@@ -174,9 +174,6 @@ def filter_product_version(conf, product_name: Optional[str], product_version: O
                     if bake_product_version(version_dict["product"], index, product_version, product_version_quantile,
                                             max_bake_runners):
                         filtered_product_versions.append(version_dict)
-                # Stop early
-                #if not len(filtered_product_versions):
-                #    logging.info(f"No version to build for product {product_name}")
                 # Make a copy of the product and replace the "versions" array with the version that matched.
                 filtered_product = product
                 filtered_product["versions"] = filtered_product_versions
@@ -187,7 +184,7 @@ def filter_product_version(conf, product_name: Optional[str], product_version: O
             else:
                 filtered_products.append(product)
         conf.products = filtered_products
-        return result
+    return result
 
 
 def bake_product_version(version: str, version_index: int, product_version: Optional[str],
