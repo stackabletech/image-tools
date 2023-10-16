@@ -31,8 +31,11 @@ def bake_args() -> Namespace:
     )
     parser.add_argument("-p", "--product",
                         help="Product to build images for", action='append')
-    parser.add_argument("--shard-count", type=positive_int, default=1)
-    parser.add_argument("--shard-index", type=positive_int, default=0)
+    parser.add_argument("--shard-count", type=positive_int, default=1,
+                        help="Split the build into N shards, which can be built separately. \
+                        All shards must be built separately, by specifying the --shard-index argument.",)
+    parser.add_argument("--shard-index", type=positive_int, default=0,
+                        help="Build shard number M out of --shard-count. Shards are zero-indexed.")
     parser.add_argument("-u", "--push", help="Push images",
                         action="store_true")
     parser.add_argument("-d", "--dry", help="Dry run.", action="store_true")
