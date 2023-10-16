@@ -86,7 +86,7 @@ def positive_int(value) -> int:
         raise ValueError(f"Invalid value [{value}]. Must be an integer greater or equal to zero.")
 
     if ivalue < 0:
-        raise ValueError("Invalid value [{value}]. Must be an integer greater or equal to zero.")
+        raise ValueError("Invalid value [{value}]. Must be an integer greater than or equal to zero.")
     return ivalue
 
 
