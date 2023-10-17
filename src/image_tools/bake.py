@@ -11,7 +11,6 @@ from typing import List, Dict, Any
 from argparse import Namespace
 from subprocess import run
 import json
-import re
 
 from image_tools.lib import Command
 from image_tools.args import bake_args, load_configuration
@@ -41,15 +40,9 @@ def build_image_tags(
     """
     Returns a list of --tag command line arguments that are used by the
     docker build command.
-    Each image is tagged with two tags as follows:
-        1. <product>-<image>
-        2. <product>-<platform>
     """
-    arr = re.split("\\.", image_version)
-    platform_version = arr[0] + "." + arr[1]
     return [
         f"{image_name}:{product_version}-stackable{image_version}",
-        f"{image_name}:{product_version}-stackable{platform_version}",
     ]
 
 
@@ -195,8 +188,8 @@ def main() -> int:
 
     result = run(cmd.args, input=cmd.input, check=True)
 
-    if args.tags_file:
-        with open(args.tags_file, 'w') as tf:
+    if args.export_tags_file:
+        with open(args.export_tags_file, 'w') as tf:
             for t in targets:
                 tf.writelines(
                     (f"{t}\n" for t in bakefile["target"][t]["tags"]))
