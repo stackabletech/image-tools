@@ -59,6 +59,11 @@ def bake_args() -> Namespace:
         help="Image registry to publish to. Default: docker.stackable.tech",
         default="docker.stackable.tech",
     )
+    parser.add_argument(
+        "--export-tags-file",
+        help="Write target image tags to a text file. Useful for signing or other follow-up CI steps."
+    ),
+
     result = parser.parse_args()
 
     if result.shard_index >= result.shard_count:

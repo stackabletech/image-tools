@@ -6,6 +6,7 @@ Usage:
 
     python -m image_tools.bake -p opa -i 22.12.0
 """
+import sys
 from typing import List, Dict, Any
 from argparse import Namespace
 from subprocess import run
@@ -16,7 +17,7 @@ from image_tools.lib import Command
 from image_tools.args import bake_args, load_configuration
 
 
-def build_image_args(version, release_version):
+def build_image_args(version: Dict[str, str], release_version: str):
     """
     Returns a list of --build-arg command line arguments that are used by the
     docker build command.
@@ -27,23 +28,15 @@ def build_image_args(version, release_version):
     """
     result = {}
 
-    if isinstance(version, dict):
-        for k, v in version.items():
-            result[k.upper()] = v
-        result["RELEASE"] = release_version
-    elif isinstance(version, str) and isinstance(release_version, str):
-        {
-            "PRODUCT": version,
-            "RELEASE": release_version,
-        }
-    else:
-        raise ValueError(f"Unsupported version object: {version}")
+    for k, v in version.items():
+        result[k.upper()] = v
+    result["RELEASE"] = release_version
 
     return result
 
 
 def build_image_tags(
-    image_name: str, image_version: str, product_version: str
+        image_name: str, image_version: str, product_version: str
 ) -> List[str]:
     """
     Returns a list of --tag command line arguments that are used by the
@@ -95,14 +88,14 @@ def bakefile_target_name_for_product_version(product_name: str, version: str) ->
     """
     Creates a normalized Bakefile target name for a given (product, version) combination.
     """
-    return f"{ product_name }-{ version.replace('.', '_') }"
+    return f"{product_name}-{version.replace('.', '_')}"
 
 
 def bakefile_product_version_targets(
-    args: Namespace,
-    product_name: str,
-    versions: Dict[str, str],
-    product_names: List[str],
+        args: Namespace,
+        product_name: str,
+        versions: Dict[str, str],
+        product_names: List[str],
 ):
     """
     Creates Bakefile targets defining how to build a given product version.
@@ -116,7 +109,7 @@ def bakefile_product_version_targets(
 
     return {
         bakefile_target_name_for_product_version(product_name, versions["product"]): {
-            "dockerfile": f"{ product_name }/Dockerfile",
+            "dockerfile": f"{product_name}/Dockerfile",
             "tags": tags,
             "args": build_args,
             "platforms": args.architecture,
@@ -180,7 +173,7 @@ def bake_command(args: Namespace, targets: List[str], bakefile) -> Command:
     )
 
 
-def main():
+def main() -> int:
     """Generate a Docker bake file from conf.py and build the given args.product images."""
     args = bake_args()
 
@@ -193,13 +186,23 @@ def main():
 
     if not targets:
         print("No targets match this filter")
-        return
+        return 0
 
     cmd = bake_command(args, targets, bakefile)
+
     if args.dry:
         print(" ".join(cmd.args))
-    run(cmd.args, input=cmd.input, check=True)
+
+    result = run(cmd.args, input=cmd.input, check=True)
+
+    if args.tags_file:
+        with open(args.tags_file, 'w') as tf:
+            for t in targets:
+                tf.writelines(
+                    (f"{t}\n" for t in bakefile["target"][t]["tags"]))
+
+    return result.returncode
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())
