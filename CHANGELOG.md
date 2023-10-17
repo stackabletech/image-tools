@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+# [0.0.4] - 2023-10-17
+
 ### Added
 
 - New `bake` argument (`--export-tags-file`) to write target tags to text file ([#4])
