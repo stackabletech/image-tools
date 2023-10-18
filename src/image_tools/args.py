@@ -12,7 +12,7 @@ DEFAULT_IMAGE_VERSION_FORMATS = [
 ]
 
 
-def bake_args() -> Namespace:
+def bake_args(args: List[str]) -> Namespace:
     parser = ArgumentParser(
         description="Build and publish product images. Requires docker and buildx (https://github.com/docker/buildx)."
     )
@@ -64,7 +64,7 @@ def bake_args() -> Namespace:
         help="Write target image tags to a text file. Useful for signing or other follow-up CI steps."
     ),
 
-    result = parser.parse_args()
+    result = parser.parse_args(args)
 
     if result.shard_index >= result.shard_count:
         raise ValueError("shard index [{}] cannot be greater or equal than shard count [{}]".format(
@@ -174,7 +174,10 @@ def check_architecture_input(architecture) -> List[str]:
 
     if architecture not in supported_arch:
         raise ValueError(
+            # autopep8: off
+            # see: https://github.com/hhatto/autopep8/issues/712
             f"Architecture {architecture} not supported. Supported: {supported_arch}"
+            # autopep8: on
         )
 
     return architecture

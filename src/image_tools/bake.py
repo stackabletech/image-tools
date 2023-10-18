@@ -168,7 +168,7 @@ def bake_command(args: Namespace, targets: List[str], bakefile) -> Command:
 
 def main() -> int:
     """Generate a Docker bake file from conf.py and build the given args.product images."""
-    args = bake_args()
+    args = bake_args(sys.argv)
 
     conf = load_configuration(args.configuration)
 
