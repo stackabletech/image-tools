@@ -6,9 +6,8 @@ import importlib.util
 import sys
 
 DEFAULT_IMAGE_VERSION_FORMATS = [
-    re.compile(r"[2-9][0-9]\.[1-9][0-2]?\.\d+"),
-    re.compile(r"[2-9][0-9]\.[1-9][0-2]?\.\d+-rc[1-9]\d?"),
-    re.compile(r"0\.0\.0-dev"),
+    re.compile(r"[2-9][0-9]\.[1-9][0-2]?\.\d+(-.+)?"),
+    re.compile(r"0\.0\.0-dev(-.+)?"),
 ]
 
 
@@ -91,6 +90,12 @@ def check_image_version_format(image_version) -> str:
     '23.4.0'
     >>> check_image_version_format("23.4.0-rc1")
     '23.4.0-rc1'
+    >>> check_image_version_format("0.0.0-dev")
+    '0.0.0-dev'
+    >>> check_image_version_format("0.0.0-dev-kebab")
+    '0.0.0-dev-kebab'
+    >>> check_image_version_format("23.11.1-dev-kaese")
+    '23.11.1-dev-kaese'
     >>> check_image_version_format("23.04.0")
     Traceback (most recent call last):
     ...
