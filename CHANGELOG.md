@@ -4,7 +4,15 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
-# [0.0.4] - 2023-10-17
+## [0.0.5] - 2023-10-19
+
+### Changed
+
+- Relax schema for image tags ([#7])
+
+[#7]: https://github.com/stackabletech/image-tools/pull/7
+
+## [0.0.4] - 2023-10-17
 
 ### Added
 
