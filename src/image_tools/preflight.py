@@ -74,7 +74,7 @@ def preflight_commands(images: List[str], args: Namespace, conf) -> Dict[str, Co
         if args.architecture:
             cmd_args.extend(
                 ["--platform",
-                    args.architecture[0],
+                    args.architecture,
                  ]
             )
         result[img] = Command(args=cmd_args)

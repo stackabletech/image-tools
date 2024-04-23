@@ -132,7 +132,6 @@ def preflight_args() -> Namespace:
         "-a",
         "--architecture",
         help="Target platform for image. Default: linux/amd64.",
-        nargs="+",
         default="linux/amd64",
         type=check_architecture_input,
     )
