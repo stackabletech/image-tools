@@ -71,6 +71,12 @@ def preflight_commands(images: List[str], args: Namespace, conf) -> Dict[str, Co
                     f"ospid-{conf.open_shift_projects[args.product]['id']}",
                  ]
             )
+        if args.architecture:
+            cmd_args.extend(
+                ["--platform",
+                    args.architecture[0],
+                 ]
+            )
         result[img] = Command(args=cmd_args)
     return result
 
