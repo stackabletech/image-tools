@@ -1,6 +1,5 @@
 # This is the stackable release version
 from argparse import Namespace, ArgumentParser
-from typing import List
 import re
 import importlib.util
 import sys
