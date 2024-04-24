@@ -1,6 +1,5 @@
 # This is the stackable release version
 from argparse import Namespace, ArgumentParser
-from typing import List
 import re
 import importlib.util
 import sys
@@ -43,7 +42,7 @@ def bake_args() -> Namespace:
         "--architecture",
         help="Target platform for image. Default: linux/amd64.",
         nargs="+",
-        default=["linux/amd64"],
+        default="linux/amd64",
         type=check_architecture_input,
     )
     parser.add_argument(
@@ -132,8 +131,7 @@ def preflight_args() -> Namespace:
         "-a",
         "--architecture",
         help="Target platform for image. Default: linux/amd64.",
-        nargs="+",
-        default=["linux/amd64"],
+        default="linux/amd64",
         type=check_architecture_input,
     )
     parser.add_argument(
@@ -174,7 +172,7 @@ def preflight_args() -> Namespace:
     return result
 
 
-def check_architecture_input(architecture) -> List[str]:
+def check_architecture_input(architecture: str) -> str:
     supported_arch = ["linux/amd64", "linux/arm64"]
 
     if architecture not in supported_arch:

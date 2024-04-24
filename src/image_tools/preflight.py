@@ -71,6 +71,14 @@ def preflight_commands(images: List[str], args: Namespace, conf) -> Dict[str, Co
                     f"ospid-{conf.open_shift_projects[args.product]['id']}",
                  ]
             )
+        if args.architecture:
+            cmd_args.extend(
+                ["--platform",
+                    # this argument value has already been checked against valid values with an expected prefix.
+                    # Preflight provides the same "linux/" prefix and so it must be removed here.
+                    args.architecture.split("linux/")[1],
+                 ]
+            )
         result[img] = Command(args=cmd_args)
     return result
 

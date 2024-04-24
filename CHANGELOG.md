@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.0.6] - 2024-04-24
+
+### Changed
+
+- Add platform argument for preflight checks ([#12])
+
+[#12]: https://github.com/stackabletech/image-tools/pull/12
+
 ## [0.0.5] - 2023-10-19
 
 ### Changed
