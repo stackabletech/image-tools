@@ -105,7 +105,7 @@ def bakefile_product_version_targets(
             "dockerfile": f"{product_name}/Dockerfile",
             "tags": tags,
             "args": build_args,
-            "platforms": args.architecture,
+            "platforms": [args.architecture],
             "context": ".",
             "contexts": {
                 f"stackable/image/{name}": f"target:{bakefile_target_name_for_product_version(name, version)}"
@@ -142,15 +142,14 @@ def bake_command(args: Namespace, targets: List[str], bakefile) -> Command:
     For local building, builder instances are supported.
     """
 
-    if args.push:
-        target_mode = ["--push"]
-    elif len(args.architecture) == 1:
-        target_mode = ["--load"]
-    else:
-        target_mode = []
-
     if args.dry:
         target_mode = ["--print"]
+    else:
+        if args.push:
+            target_mode = ["--push"]
+        else:
+            target_mode = ["--load"]
+
 
     return Command(
         args=[
