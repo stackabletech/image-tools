@@ -13,6 +13,7 @@ classifiers = [
 dependencies = ["Jinja2>=3.1.2", "PyYAML>=6.0"]
 [project.optional-dependencies]
 lint = ['ruff==0.0.275', 'mypy==1.4.0']
+publish = ['twine==5.0.0', 'build==1.2.1']
 
 [project.scripts]
 bake = "image_tools.bake:main"
