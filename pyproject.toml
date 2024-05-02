@@ -1,21 +1,16 @@
 [project]
 name = "image-tools-stackabletech"
-version = "0.0.6"
-authors = [
-    { name = "Razvan Mihai", email = "razvan.mihai@stackable.tech" }
-]
+version = "0.0.7"
+authors = [{ name = "Razvan Mihai", email = "razvan.mihai@stackable.tech" }]
 description = "Image tools for the Stackable Data Platform."
 readme = "README.md"
 requires-python = ">=3.10"
 classifiers = [
-    "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: MIT License",
-    "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
 ]
-dependencies = [
-    "Jinja2>=3.1.2",
-    "PyYAML>=6.0"
-]
+dependencies = ["Jinja2>=3.1.2", "PyYAML>=6.0"]
 [project.optional-dependencies]
 lint = ['ruff==0.0.275', 'mypy==1.4.0']
 

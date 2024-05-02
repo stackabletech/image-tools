@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## 0.0.7
+
 ### Fixed
 
 - Invalid 'buildx bake' configuration file generated due to architecture not being a list anymore. ([#13])
