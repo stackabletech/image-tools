@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Fixed
+
+- Invalid 'buildx bake' configuration file generated due to architecture not being a list anymore. ([#13])
+
+[#13]: https://github.com/stackabletech/image-tools/pull/13
+
 ## [0.0.6] - 2024-04-24
 
 ### Changed
