@@ -142,13 +142,14 @@ def bake_command(args: Namespace, targets: List[str], bakefile) -> Command:
     For local building, builder instances are supported.
     """
 
-    if args.push:
-        target_mode = ["--push"]
-    else:
-        target_mode = ["--load"]
-
     if args.dry:
         target_mode = ["--print"]
+    else:
+        if args.push:
+            target_mode = ["--push"]
+        else:
+            target_mode = ["--load"]
+
 
     return Command(
         args=[
