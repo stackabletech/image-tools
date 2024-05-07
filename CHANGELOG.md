@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Added
+
+- New command line arg to `bake`: `--version` ([#17])
+
+[#17]: https://github.com/stackabletech/image-tools/pull/17
+
+
 ## 0.0.7
 
 ### Fixed
