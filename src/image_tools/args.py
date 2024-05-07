@@ -4,6 +4,9 @@ import re
 import importlib.util
 import sys
 
+from .version import version
+
+
 DEFAULT_IMAGE_VERSION_FORMATS = [
     re.compile(r"[2-9][0-9]\.[1-9][0-2]?\.\d+(-.+)?"),
     re.compile(r"0\.0\.0-dev(-.+)?"),
@@ -12,30 +15,40 @@ DEFAULT_IMAGE_VERSION_FORMATS = [
 
 def bake_args() -> Namespace:
     parser = ArgumentParser(
-        description="Build and publish product images. Requires docker and buildx (https://github.com/docker/buildx)."
+        description=f"bake {version()} Build and publish product images. Requires docker and buildx (https://github.com/docker/buildx)."
     )
-    parser.add_argument(
-        "-c",
-        "--configuration",
-        help="Configuration file.",
-        default="./conf.py",
-    ),
+    parser.add_argument("-v", "--version", help="Display version", action="store_true")
+
+    (
+        parser.add_argument(
+            "-c",
+            "--configuration",
+            help="Configuration file.",
+            default="./conf.py",
+        ),
+    )
     parser.add_argument(
         "-i",
         "--image-version",
         help="Image version",
-        default='0.0.0-dev',
+        default="0.0.0-dev",
         type=check_image_version_format,
     )
-    parser.add_argument("-p", "--product",
-                        help="Product to build images for", action='append')
-    parser.add_argument("--shard-count", type=positive_int, default=1,
-                        help="Split the build into N shards, which can be built separately. \
-                        All shards must be built separately, by specifying the --shard-index argument.",)
-    parser.add_argument("--shard-index", type=positive_int, default=0,
-                        help="Build shard number M out of --shard-count. Shards are zero-indexed.")
-    parser.add_argument("-u", "--push", help="Push images",
-                        action="store_true")
+    parser.add_argument("-p", "--product", help="Product to build images for", action="append")
+    parser.add_argument(
+        "--shard-count",
+        type=positive_int,
+        default=1,
+        help="Split the build into N shards, which can be built separately. \
+                        All shards must be built separately, by specifying the --shard-index argument.",
+    )
+    parser.add_argument(
+        "--shard-index",
+        type=positive_int,
+        default=0,
+        help="Build shard number M out of --shard-count. Shards are zero-indexed.",
+    )
+    parser.add_argument("-u", "--push", help="Push images", action="store_true")
     parser.add_argument("-d", "--dry", help="Dry run.", action="store_true")
     parser.add_argument(
         "-a",
@@ -56,16 +69,21 @@ def bake_args() -> Namespace:
         help="Image registry to publish to. Default: docker.stackable.tech",
         default="docker.stackable.tech",
     )
-    parser.add_argument(
-        "--export-tags-file",
-        help="Write target image tags to a text file. Useful for signing or other follow-up CI steps."
-    ),
+    (
+        parser.add_argument(
+            "--export-tags-file",
+            help="Write target image tags to a text file. Useful for signing or other follow-up CI steps.",
+        ),
+    )
 
     result = parser.parse_args()
 
     if result.shard_index >= result.shard_count:
-        raise ValueError("shard index [{}] cannot be greater or equal than shard count [{}]".format(
-            result.shard_index, result.shard_count))
+        raise ValueError(
+            "shard index [{}] cannot be greater or equal than shard count [{}]".format(
+                result.shard_index, result.shard_count
+            )
+        )
     return result
 
 
@@ -76,8 +94,7 @@ def positive_int(value) -> int:
             raise ValueError
         return ivalue
     except ValueError:
-        raise ValueError(
-            f"Invalid value [{value}]. Must be an integer greater than or equal to zero.")
+        raise ValueError(f"Invalid value [{value}]. Must be an integer greater than or equal to zero.")
 
 
 def check_image_version_format(image_version) -> str:
@@ -113,6 +130,9 @@ def preflight_args() -> Namespace:
     parser = ArgumentParser(
         description="Run OpenShift certification checks and submit results to RedHat Partner Connect portal"
     )
+
+    parser.add_argument("-v", "--version", help="Display version", action="store_true")
+
     parser.add_argument(
         "-i",
         "--image-version",
@@ -120,11 +140,8 @@ def preflight_args() -> Namespace:
         required=True,
         type=check_image_version_format,
     )
-    parser.add_argument(
-        "-p", "--product", help="Product to build images for", required=True
-    )
-    parser.add_argument(
-        "-s", "--submit", help="Submit results", action="store_true")
+    parser.add_argument("-p", "--product", help="Product to build images for", required=True)
+    parser.add_argument("-s", "--submit", help="Submit results", action="store_true")
     parser.add_argument("-d", "--dry", help="Dry run.", action="store_true")
     parser.add_argument(
         "-a",
@@ -156,12 +173,14 @@ def preflight_args() -> Namespace:
         help="Name of the preflight program. Default: preflight",
         default="preflight",
     )
-    parser.add_argument(
-        "-c",
-        "--configuration",
-        help="Configuration file.",
-        default="./conf.py",
-    ),
+    (
+        parser.add_argument(
+            "-c",
+            "--configuration",
+            help="Configuration file.",
+            default="./conf.py",
+        ),
+    )
 
     result = parser.parse_args()
 
@@ -175,9 +194,7 @@ def check_architecture_input(architecture: str) -> str:
     supported_arch = ["linux/amd64", "linux/arm64"]
 
     if architecture not in supported_arch:
-        raise ValueError(
-            f"Architecture {architecture} not supported. Supported: {supported_arch}"
-        )
+        raise ValueError(f"Architecture {architecture} not supported. Supported: {supported_arch}")
 
     return architecture
 
