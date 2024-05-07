@@ -93,10 +93,6 @@ def main() -> int:
 
     args = preflight_args()
 
-    if args.version:
-        print(version())
-        return 0
-
     conf = load_configuration(args.configuration)
 
     bakefile = generate_bakefile(args, conf)
