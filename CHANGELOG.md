@@ -6,7 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
-- New command line arg to `bake`: `--version` ([#17])
+- New command line arg to `bake`: `--version`. Also switch to relative imports. ([#17])
 
 [#17]: https://github.com/stackabletech/image-tools/pull/17
 
