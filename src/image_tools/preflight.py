@@ -20,7 +20,6 @@ import logging
 from .args import preflight_args, load_configuration
 from .lib import Command
 from .bake import generate_bakefile
-from .version import version
 
 
 def get_images_for_target(product: str, bakefile: Dict[str, Any]) -> List[str]:

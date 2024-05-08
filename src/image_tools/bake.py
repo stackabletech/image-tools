@@ -118,8 +118,8 @@ def targets_for_selector(conf, selected_products: List[str]) -> List[str]:
         product = next((product for product in conf.products if product["name"] == product_name), None)
         if product is None:
             raise ValueError(f"Requested unknown product [{product_name}]")
-        for version in versions or (version["product"] for version in product["versions"]):
-            targets.append(bakefile_target_name_for_product_version(product_name, version))
+        for ver in versions or (ver["product"] for ver in product["versions"]):
+            targets.append(bakefile_target_name_for_product_version(product_name, ver))
     return targets
 
 
