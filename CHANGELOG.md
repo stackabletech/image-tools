@@ -7,6 +7,8 @@ All notable changes to this project will be documented in this file.
 ### Added
 
 - New command line arg to `bake`: `--version`. Also switch to relative imports. ([#17])
+- Raise lint dependency versions ([#17])
+- Drop support for python 3.10 and add explicit support for 3.12 ([#17])
 
 [#17]: https://github.com/stackabletech/image-tools/pull/17
 
