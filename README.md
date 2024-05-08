@@ -47,7 +47,7 @@ pip install git+https://github.com/stackabletech/image-tools.git@main
 
 Update the version in:
 
-* `pyproject.toml`
+* `src/image_tools/version.py`
 * `README.md` : version and pip install command.
 
 Update the CHANGELOG.

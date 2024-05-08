@@ -6,14 +6,16 @@ Usage:
 
     python -m image_tools.bake -p opa -i 22.12.0
 """
+
 import sys
 from typing import List, Dict, Any
 from argparse import Namespace
 from subprocess import run
 import json
 
-from image_tools.lib import Command
-from image_tools.args import bake_args, load_configuration
+from .lib import Command
+from .args import bake_args, load_configuration
+from .version import version
 
 
 def build_image_args(version: Dict[str, str], release_version: str):
@@ -34,9 +36,7 @@ def build_image_args(version: Dict[str, str], release_version: str):
     return result
 
 
-def build_image_tags(
-        image_name: str, image_version: str, product_version: str
-) -> List[str]:
+def build_image_tags(image_name: str, image_version: str, product_version: str) -> List[str]:
     """
     Returns a list of --tag command line arguments that are used by the
     docker build command.
@@ -59,11 +59,7 @@ def generate_bakefile(args: Namespace, conf) -> Dict[str, Any]:
         product_name: str = product["name"]
         product_targets = {}
         for version_dict in product.get("versions", []):
-            product_targets.update(
-                bakefile_product_version_targets(
-                    args, product_name, version_dict, product_names
-                )
-            )
+            product_targets.update(bakefile_product_version_targets(args, product_name, version_dict, product_names))
         groups[product_name] = {
             "targets": list(product_targets.keys()),
         }
@@ -85,10 +81,10 @@ def bakefile_target_name_for_product_version(product_name: str, version: str) ->
 
 
 def bakefile_product_version_targets(
-        args: Namespace,
-        product_name: str,
-        versions: Dict[str, str],
-        product_names: List[str],
+    args: Namespace,
+    product_name: str,
+    versions: Dict[str, str],
+    product_names: List[str],
 ):
     """
     Creates Bakefile targets defining how to build a given product version.
@@ -96,8 +92,7 @@ def bakefile_product_version_targets(
     A product is assumed to depend on another if it defines a `versions` field with the same name as the other product.
     """
     image_name = f"{args.registry}/{args.organization}/{product_name}"
-    tags = build_image_tags(
-        image_name, args.image_version, versions["product"])
+    tags = build_image_tags(image_name, args.image_version, versions["product"])
     build_args = build_image_args(versions, args.image_version)
 
     return {
@@ -118,15 +113,13 @@ def bakefile_product_version_targets(
 
 def targets_for_selector(conf, selected_products: List[str]) -> List[str]:
     targets = []
-    for selected_product in selected_products or (product['name'] for product in conf.products):
+    for selected_product in selected_products or (product["name"] for product in conf.products):
         product_name, *versions = selected_product.split("=")
-        product = next(
-            (product for product in conf.products if product['name'] == product_name), None)
+        product = next((product for product in conf.products if product["name"] == product_name), None)
         if product is None:
             raise ValueError(f"Requested unknown product [{product_name}]")
-        for version in versions or (version['product'] for version in product['versions']):
-            targets.append(bakefile_target_name_for_product_version(
-                product_name, version))
+        for ver in versions or (ver["product"] for ver in product["versions"]):
+            targets.append(bakefile_target_name_for_product_version(product_name, ver))
     return targets
 
 
@@ -150,7 +143,6 @@ def bake_command(args: Namespace, targets: List[str], bakefile) -> Command:
         else:
             target_mode = ["--load"]
 
-
     return Command(
         args=[
             "docker",
@@ -169,12 +161,15 @@ def main() -> int:
     """Generate a Docker bake file from conf.py and build the given args.product images."""
     args = bake_args()
 
+    if args.version:
+        print(version())
+        return 0
+
     conf = load_configuration(args.configuration)
 
     bakefile = generate_bakefile(args, conf)
 
-    targets = filter_targets_for_shard(targets_for_selector(
-        conf, args.product), args.shard_count, args.shard_index)
+    targets = filter_targets_for_shard(targets_for_selector(conf, args.product), args.shard_count, args.shard_index)
 
     if not targets:
         print("No targets match this filter")
@@ -188,10 +183,9 @@ def main() -> int:
     result = run(cmd.args, input=cmd.input, check=True)
 
     if args.export_tags_file:
-        with open(args.export_tags_file, 'w') as tf:
+        with open(args.export_tags_file, "w") as tf:
             for t in targets:
-                tf.writelines(
-                    (f"{t}\n" for t in bakefile["target"][t]["tags"]))
+                tf.writelines((f"{t}\n" for t in bakefile["target"][t]["tags"]))
 
     return result.returncode
 

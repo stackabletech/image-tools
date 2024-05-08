@@ -17,9 +17,9 @@ import json
 import sys
 import logging
 
-from image_tools.args import preflight_args, load_configuration
-from image_tools.lib import Command
-from image_tools.bake import generate_bakefile
+from .args import preflight_args, load_configuration
+from .lib import Command
+from .bake import generate_bakefile
 
 
 def get_images_for_target(product: str, bakefile: Dict[str, Any]) -> List[str]:
@@ -38,12 +38,9 @@ def get_preflight_failures(image_commands: Dict[str, Command]) -> Dict[str, List
     failures = {}
     for image, cmd in image_commands.items():
         try:
-            preflight_result = subprocess.run(
-                cmd.args, input=cmd.input, check=True, stdout=subprocess.PIPE
-            )
+            preflight_result = subprocess.run(cmd.args, input=cmd.input, check=True, stdout=subprocess.PIPE)
             preflight_json = json.loads(preflight_result.stdout)
-            failures[image] = preflight_json.get(
-                "results", {}).get("failed", [])
+            failures[image] = preflight_json.get("results", {}).get("failed", [])
         except subprocess.CalledProcessError as error:
             failures[image] = [error.stderr.decode("utf-8")]
         except FileNotFoundError:
@@ -62,22 +59,24 @@ def preflight_commands(images: List[str], args: Namespace, conf) -> Dict[str, Co
         cmd_args = [args.executable, "check", "container", img]
         if args.submit:
             cmd_args.extend(
-                ["--loglevel",
+                [
+                    "--loglevel",
                     "trace",
                     "--submit",
                     "--pyxis-api-token",
                     args.token,
                     "--certification-project-id",
                     f"ospid-{conf.open_shift_projects[args.product]['id']}",
-                 ]
+                ]
             )
         if args.architecture:
             cmd_args.extend(
-                ["--platform",
+                [
+                    "--platform",
                     # this argument value has already been checked against valid values with an expected prefix.
                     # Preflight provides the same "linux/" prefix and so it must be removed here.
                     args.architecture.split("linux/")[1],
-                 ]
+                ]
             )
         result[img] = Command(args=cmd_args)
     return result
@@ -125,10 +124,7 @@ def main() -> int:
         if len(img_fails) == 0:
             logging.info("Image [%s] preflight check successful.", image)
         else:
-            logging.error(
-                "Image [%s] preflight check failures: %s", image, ",".join(
-                    img_fails)
-            )
+            logging.error("Image [%s] preflight check failures: %s", image, ",".join(img_fails))
 
     fail_count = sum(map(len, failures.values()))
     return fail_count

@@ -1,6 +1,10 @@
+[build-system]
+requires = ["setuptools >= 61.0"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "image-tools-stackabletech"
-version = "0.0.7"
+dynamic = ["version"]
 authors = [{ name = "Razvan Mihai", email = "razvan.mihai@stackable.tech" }]
 description = "Image tools for the Stackable Data Platform."
 readme = "README.md"
@@ -12,8 +16,8 @@ classifiers = [
 ]
 dependencies = ["Jinja2>=3.1.2", "PyYAML>=6.0"]
 [project.optional-dependencies]
-lint = ['ruff==0.0.275', 'mypy==1.4.0']
-publish = ['twine==5.0.0', 'build==1.2.1']
+lint = ['ruff>=0.4', 'mypy>=1.10']
+publish = ['twine>=5.0', 'build>=1.2']
 
 [project.scripts]
 bake = "image_tools.bake:main"
@@ -29,3 +33,6 @@ line-length = 120
 
 [tool.mypy]
 ignore_missing_imports = true
+
+[tool.setuptools.dynamic]
+version = { attr = "image_tools.version.__version__" }
