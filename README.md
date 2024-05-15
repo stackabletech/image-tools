@@ -43,6 +43,29 @@ pip install image-tools-stackabletech
 pip install git+https://github.com/stackabletech/image-tools.git@main
 ```
 
+Or via Nix Shell:
+
+```nix
+{ lib, pkgs, ... }:
+with lib;
+let
+  image-tools = pkgs.callPackage (pkgs.fetchFromGitHub {
+    owner = "stackabletech";
+    repo = "image-tools";
+    rev = "caa4d993bcbb8b884097c89a54ee246f975e2ec6";
+    hash = "sha256-gjTCroHw4iJhXPW+s3mHBzIH8seIKH1tPb82lUb8+a0="; # comment out to find new hashes when upgrading
+  } + "/image-tools.nix") {};
+in
+{
+  packages = with pkgs; [
+    image-tools
+    # ...
+  ];
+
+  // ...
+}
+```
+
 ## Release a new version
 
 Update the version in:
