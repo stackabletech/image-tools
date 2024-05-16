@@ -23,18 +23,23 @@ def bake_args() -> Namespace:
         parser.add_argument(
             "-c",
             "--configuration",
-            help="Configuration file.",
+            help="Configuration file. Default: './conf.py'.",
             default="./conf.py",
         ),
     )
     parser.add_argument(
         "-i",
         "--image-version",
-        help="Image version",
-        default="0.0.0-dev",
         type=check_image_version_format,
+        default="0.0.0-dev",
+        help="Image version. Default: 0.0.0-dev."
     )
-    parser.add_argument("-p", "--product", help="Product to build images for", action="append")
+    parser.add_argument(
+        "-p",
+        "--product",
+        action="append",
+        help="Product to build images for. For example 'druid' or 'druid=28.0.1' to build a specific version."
+    )
     parser.add_argument(
         "--shard-count",
         type=positive_int,
@@ -48,7 +53,7 @@ def bake_args() -> Namespace:
         default=0,
         help="Build shard number M out of --shard-count. Shards are zero-indexed.",
     )
-    parser.add_argument("-u", "--push", help="Push images", action="store_true")
+    parser.add_argument("-u", "--push", help="Push images.", action="store_true")
     parser.add_argument("-d", "--dry", help="Dry run.", action="store_true")
     parser.add_argument(
         "-a",
@@ -60,13 +65,13 @@ def bake_args() -> Namespace:
     parser.add_argument(
         "-o",
         "--organization",
-        help="Organization name within the given registry. Default: stackable",
+        help="Organization name within the given registry. Default: stackable.",
         default="stackable",
     )
     parser.add_argument(
         "-r",
         "--registry",
-        help="Image registry to publish to. Default: docker.stackable.tech",
+        help="Image registry to publish to. Default: docker.stackable.tech.",
         default="docker.stackable.tech",
     )
     (
