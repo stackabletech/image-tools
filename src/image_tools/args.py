@@ -3,6 +3,7 @@ from argparse import Namespace, ArgumentParser
 import re
 import importlib.util
 import sys
+import os
 
 from .version import version
 
@@ -206,6 +207,7 @@ def check_architecture_input(architecture: str) -> str:
 
 def load_configuration(conf_file_name: str):
     module_name = "conf"
+    sys.path.append(str(os.getcwd()))
     spec = importlib.util.spec_from_file_location(module_name, conf_file_name)
     if spec:
         module = importlib.util.module_from_spec(spec)
