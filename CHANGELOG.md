@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.0.9] - 2024-07-02
+
 ### Added
 
 - New command line arg to `bake`: `--cache`. Requires cache backend configuration in conf.py ([#29])
