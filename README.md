@@ -1,4 +1,4 @@
-# image-tools v0.0.7
+# image-tools v0.0.8
 
 Commandline tools to manage Stackable container images available at https://github.com/stackabletech/docker-images
 
