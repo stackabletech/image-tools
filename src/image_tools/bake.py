@@ -8,6 +8,7 @@ Usage:
 """
 
 import sys
+import copy
 from typing import List, Dict, Any
 from argparse import Namespace
 from subprocess import run
@@ -59,7 +60,7 @@ def generate_bakefile(args: Namespace, conf) -> Dict[str, Any]:
         product_name: str = product["name"]
         product_targets = {}
         for version_dict in product.get("versions", []):
-            product_targets.update(bakefile_product_version_targets(args, product_name, version_dict, product_names))
+            product_targets.update(bakefile_product_version_targets(args, product_name, version_dict, product_names, conf.cache))
         groups[product_name] = {
             "targets": list(product_targets.keys()),
         }
@@ -85,6 +86,7 @@ def bakefile_product_version_targets(
     product_name: str,
     versions: Dict[str, str],
     product_names: List[str],
+    cache: List[Dict[str, str]],
 ):
     """
     Creates Bakefile targets defining how to build a given product version.
@@ -94,9 +96,10 @@ def bakefile_product_version_targets(
     image_name = f"{args.registry}/{args.organization}/{product_name}"
     tags = build_image_tags(image_name, args.image_version, versions["product"])
     build_args = build_image_args(versions, args.image_version)
+    target_name = bakefile_target_name_for_product_version(product_name, versions["product"])
 
-    return {
-        bakefile_target_name_for_product_version(product_name, versions["product"]): {
+    result = {
+        target_name: {
             "dockerfile": f"{product_name}/Dockerfile",
             "tags": tags,
             "args": build_args,
@@ -106,10 +109,14 @@ def bakefile_product_version_targets(
                 f"stackable/image/{name}": f"target:{bakefile_target_name_for_product_version(name, version)}"
                 for name, version in versions.items()
                 if name in product_names
-            },
+            }
         },
     }
 
+    if args.cache:
+        result[target_name]["cache-to"] = result[target_name]["cache-from"] = generate_cache_location(cache, target_name)
+
+    return result
 
 def targets_for_selector(conf, selected_products: List[str]) -> List[str]:
     targets = []
@@ -156,6 +163,16 @@ def bake_command(args: Namespace, targets: List[str], bakefile) -> Command:
         stdin=json.dumps(bakefile),
     )
 
+def generate_cache_location(cache: List[Dict[str, str]], target_name: str) -> List[str]:
+    cache_copy = copy.deepcopy(cache)
+    result = []
+
+    for backend in cache_copy:
+        backend["ref"] = f"{backend['ref_prefix']}:{target_name}"
+        del backend["ref_prefix"]
+        result.append(",".join([f"{k}={v}" for k, v in backend.items()]))
+
+    return result
 
 def main() -> int:
     """Generate a Docker bake file from conf.py and build the given args.product images."""

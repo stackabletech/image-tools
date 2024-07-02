@@ -80,6 +80,11 @@ def bake_args() -> Namespace:
             help="Write target image tags to a text file. Useful for signing or other follow-up CI steps.",
         ),
     )
+    parser.add_argument(
+        "--cache",
+        help="Enable distributed build cache",
+        action="store_true"
+    ),
 
     result = parser.parse_args()
 
