@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Added
+
+- New command line arg to `bake`: `--cache`. Requires cache backend configuration in conf.py ([#29])
+
+[#29]: https://github.com/stackabletech/image-tools/pull/29
+
 ## [0.0.8] - 2024-07-02
 
 ### Added
