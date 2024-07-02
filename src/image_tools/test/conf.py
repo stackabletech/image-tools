@@ -442,4 +442,5 @@ open_shift_projects = {
     "zookeeper": {"id": "62552b0aadd9d54d56cda11d"},
 }
 
-cache = []
+# The type hint is needed for mypy
+cache: list[str] = []
