@@ -168,8 +168,9 @@ def generate_cache_location(cache: List[Dict[str, str]], target_name: str) -> Li
     result = []
 
     for backend in cache_copy:
-        backend["ref"] = f"{backend['ref_prefix']}:{target_name}"
-        del backend["ref_prefix"]
+        if 'ref_prefix' in backend:
+            backend["ref"] = f"{backend['ref_prefix']}:{target_name}"
+            del backend["ref_prefix"]
         result.append(",".join([f"{k}={v}" for k, v in backend.items()]))
 
     return result
