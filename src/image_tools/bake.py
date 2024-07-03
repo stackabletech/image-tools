@@ -114,7 +114,7 @@ def bakefile_product_version_targets(
     }
 
     if args.cache:
-        result[target_name]["cache-to"] = result[target_name]["cache-from"] = generate_cache_location(cache, target_name)
+        result[target_name]["cache-to"] = result[target_name]["cache-from"] = generate_cache_location(cache, target_name, args.architecture)
 
     return result
 
@@ -163,13 +163,17 @@ def bake_command(args: Namespace, targets: List[str], bakefile) -> Command:
         stdin=json.dumps(bakefile),
     )
 
-def generate_cache_location(cache: List[Dict[str, str]], target_name: str) -> List[str]:
+def generate_cache_location(cache: List[Dict[str, str]], target_name: str, arch: str) -> List[str]:
     cache_copy = copy.deepcopy(cache)
     result = []
 
     for backend in cache_copy:
-        backend["ref"] = f"{backend['ref_prefix']}:{target_name}"
-        del backend["ref_prefix"]
+        if 'ref_prefix' in backend:
+            # Need to replace the / from values like linux/amd64 because otherwise
+            # the cache ref would be invalid.
+            arch = arch.replace('/', '_')
+            backend["ref"] = f"{backend['ref_prefix']}:{target_name}-{arch}"
+            del backend["ref_prefix"]
         result.append(",".join([f"{k}={v}" for k, v in backend.items()]))
 
     return result
