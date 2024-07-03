@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.0.10] - 2024-07-03
+
 ### Fixed
 
 - Add architecture identifier to the build cache backend ref name ([#31])
