@@ -53,6 +53,11 @@ def generate_bakefile(args: Namespace, conf) -> Dict[str, Any]:
 
     build_and_publish_images() ensures that only the desired images are actually built.
     """
+    build_cache = []
+    try:
+        build_cache = conf.cache
+    except AttributeError:
+        pass
     targets = {}
     groups = {}
     product_names: list[str] = [product["name"] for product in conf.products]
@@ -60,7 +65,7 @@ def generate_bakefile(args: Namespace, conf) -> Dict[str, Any]:
         product_name: str = product["name"]
         product_targets = {}
         for version_dict in product.get("versions", []):
-            product_targets.update(bakefile_product_version_targets(args, product_name, version_dict, product_names, conf.cache))
+            product_targets.update(bakefile_product_version_targets(args, product_name, version_dict, product_names, build_cache))
         groups[product_name] = {
             "targets": list(product_targets.keys()),
         }
