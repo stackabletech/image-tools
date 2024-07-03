@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Fixed
+
+- Add architecture identifier to the build cache backend ref name ([#31])
+
+[#31]: https://github.com/stackabletech/image-tools/pull/31
+
+
 ## [0.0.9] - 2024-07-02
 
 ### Added
