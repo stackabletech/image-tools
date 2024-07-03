@@ -7,8 +7,10 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 
 - Add architecture identifier to the build cache backend ref name ([#31])
+- Backwards compat: don't assume conf.cache exists ([#32])
 
 [#31]: https://github.com/stackabletech/image-tools/pull/31
+[#32]: https://github.com/stackabletech/image-tools/pull/32
 
 
 ## [0.0.9] - 2024-07-02
