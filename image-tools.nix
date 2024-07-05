@@ -1,6 +1,6 @@
 { python3, runCommand, lib }:
 let
-  # I wish there was a better way. If the command fails, it is very hard to see 
+  # I wish there was a better way. If the command fails, it is very hard to see
   # that the problem is here. Perhaps there is some way to evaluate it in python
   # and reference __version__ directly?
   version = builtins.readFile (runCommand "image-tools-version" {} ''
@@ -31,5 +31,3 @@ python3.pkgs.buildPythonApplication {
     pyyaml
   ];
 }
-
-

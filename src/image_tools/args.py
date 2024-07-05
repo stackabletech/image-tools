@@ -33,13 +33,13 @@ def bake_args() -> Namespace:
         "--image-version",
         type=check_image_version_format,
         default="0.0.0-dev",
-        help="Image version. Default: 0.0.0-dev."
+        help="Image version. Default: 0.0.0-dev.",
     )
     parser.add_argument(
         "-p",
         "--product",
         action="append",
-        help="Product to build images for. For example 'druid' or 'druid=28.0.1' to build a specific version."
+        help="Product to build images for. For example 'druid' or 'druid=28.0.1' to build a specific version.",
     )
     parser.add_argument(
         "--shard-count",
@@ -81,11 +81,7 @@ def bake_args() -> Namespace:
             help="Write target image tags to a text file. Useful for signing or other follow-up CI steps.",
         ),
     )
-    parser.add_argument(
-        "--cache",
-        help="Enable distributed build cache",
-        action="store_true"
-    ),
+    (parser.add_argument("--cache", help="Enable distributed build cache", action="store_true"),)
 
     result = parser.parse_args()
 

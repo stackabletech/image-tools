@@ -194,13 +194,7 @@ products = [
     },
     {
         "name": "vector",
-        "versions": [
-            {
-                "product": "0.31.0",
-                "rpm_release": "1",
-                "stackable-base": "1.0.0"
-            }
-        ],
+        "versions": [{"product": "0.31.0", "rpm_release": "1", "stackable-base": "1.0.0"}],
     },
     {
         "name": "nifi",
@@ -316,7 +310,6 @@ products = [
                 "java-base": "17",
                 "python": "3.11",
                 "hadoop_short_version": "3",
-
                 # https://github.com/apache/spark/blob/1db2f5c36b120c213432fc658c9fd24fc73cb45e/pom.xml#L122
                 "hadoop_long_version": "3.3.4",
                 # https://mvnrepository.com/artifact/org.apache.hadoop/hadoop-aws/3.3.4
@@ -368,34 +361,34 @@ products = [
                 "vector": "0.31.0",
             },
             {
-                'product': '2.0.1',
-                'python': '3.9',
-                'vector': '0.31.0',
-                'authlib': '0.15.4'  # https://github.com/dpgaspar/Flask-AppBuilder/blob/4ac9bba008e404b9a1e783cd272c81bb8634de3d/requirements-extra.txt#L10
+                "product": "2.0.1",
+                "python": "3.9",
+                "vector": "0.31.0",
+                "authlib": "0.15.4",  # https://github.com/dpgaspar/Flask-AppBuilder/blob/4ac9bba008e404b9a1e783cd272c81bb8634de3d/requirements-extra.txt#L10
             },
             {
-                'product': '2.1.0',
-                'python': '3.9',
-                'vector': '0.31.0',
-                'authlib': '0.15.4'  # https://github.com/dpgaspar/Flask-AppBuilder/blob/4554c40e2298d11c4472ca64b9a60236b12c6535/requirements-extra.txt#L10
+                "product": "2.1.0",
+                "python": "3.9",
+                "vector": "0.31.0",
+                "authlib": "0.15.4",  # https://github.com/dpgaspar/Flask-AppBuilder/blob/4554c40e2298d11c4472ca64b9a60236b12c6535/requirements-extra.txt#L10
             },
         ],
     },
     {
         "name": "trino",
         "versions": [
-            {"product": "377", "java-base": "11",
-                "opa_authorizer": "0.1.0", "jmx_exporter": "0.16.1"},
-            {"product": "387", "java-base": "11",
-                "opa_authorizer": "0.1.0", "jmx_exporter": "0.16.1"},
-            {"product": "395", "java-base": "17",
-                "opa_authorizer": "stackable0.1.0", "jmx_exporter": "0.16.1"},
-            {"product": "396", "java-base": "17",
-                "opa_authorizer": "stackable0.1.0", "jmx_exporter": "0.16.1"},
-            {"product": "403", "java-base": "17",
-                "opa_authorizer": "stackable0.1.0", "jmx_exporter": "0.16.1"},
-            {"product": "414", "java-base": "17", "opa_authorizer": "stackable0.2.0",
-                "jmx_exporter": "0.18.0", "storage_connector": "414"},
+            {"product": "377", "java-base": "11", "opa_authorizer": "0.1.0", "jmx_exporter": "0.16.1"},
+            {"product": "387", "java-base": "11", "opa_authorizer": "0.1.0", "jmx_exporter": "0.16.1"},
+            {"product": "395", "java-base": "17", "opa_authorizer": "stackable0.1.0", "jmx_exporter": "0.16.1"},
+            {"product": "396", "java-base": "17", "opa_authorizer": "stackable0.1.0", "jmx_exporter": "0.16.1"},
+            {"product": "403", "java-base": "17", "opa_authorizer": "stackable0.1.0", "jmx_exporter": "0.16.1"},
+            {
+                "product": "414",
+                "java-base": "17",
+                "opa_authorizer": "stackable0.2.0",
+                "jmx_exporter": "0.18.0",
+                "storage_connector": "414",
+            },
         ],
     },
     {

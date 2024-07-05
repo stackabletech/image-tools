@@ -29,4 +29,3 @@ jobs:
     - name: Publish
       run: |
         twine upload  --non-interactive --verbose --username __token__ --password ${{ secrets.PYPI_API_TOKEN }} dist/*
-
