@@ -10,7 +10,7 @@ All notable changes to this project will be documented in this file.
 
 - Automatically create labels and annotations recording the git revision and build time ([#34])
 
-[#34]: https://github.com/stackabletech/image-tools/pull/34 
+[#34]: https://github.com/stackabletech/image-tools/pull/34
 
 ## [0.0.10] - 2024-07-03
 
