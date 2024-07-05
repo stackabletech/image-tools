@@ -11,7 +11,8 @@ import sys
 import copy
 from typing import List, Dict, Any
 from argparse import Namespace
-from subprocess import run
+from datetime import datetime, timezone
+from subprocess import run, CalledProcessError
 import json
 
 from .lib import Command
@@ -102,9 +103,21 @@ def bakefile_product_version_targets(
     tags = build_image_tags(image_name, args.image_version, versions["product"])
     build_args = build_image_args(versions, args.image_version)
     target_name = bakefile_target_name_for_product_version(product_name, versions["product"])
+    rfc3339_date_time = datetime.now(timezone.utc).isoformat()
+    revision = get_git_revision()
 
+    # The build-date label is set on UBI images automatically so we want to override it to not cause confusion even though it means we have the same date in the labels multiple times
     result = {
         target_name: {
+            "annotations": [
+                f"org.opencontainers.image.created={rfc3339_date_time}",
+                f"org.opencontainers.image.revision={revision}"
+            ],
+            "labels": {
+                "org.opencontainers.image.created": rfc3339_date_time,
+                "build-date": rfc3339_date_time,
+                "org.opencontainers.image.revision": revision
+            },
             "dockerfile": f"{product_name}/Dockerfile",
             "tags": tags,
             "args": build_args,
@@ -214,6 +227,13 @@ def main() -> int:
                 tf.writelines((f"{t}\n" for t in bakefile["target"][t]["tags"]))
 
     return result.returncode
+
+def get_git_revision():
+    try:
+        result = run(['git', 'rev-parse', 'HEAD'], capture_output=True, text=True, check=True)
+        return result.stdout.strip()
+    except CalledProcessError:
+        return None
 
 
 if __name__ == "__main__":
