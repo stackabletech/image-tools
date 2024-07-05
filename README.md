@@ -1,11 +1,19 @@
 # image-tools v0.0.11
 
-Commandline tools to manage Stackable container images available at https://github.com/stackabletech/docker-images
+Command line tools to manage Stackable container images available at [docker-images](https://github.com/stackabletech/docker-images)
 
 This repository (and the installable package) contain two tools:
 
 * `bake` : build and publish product images.
 * `check-container` : run RedHat preflight checks on container images.
+
+The `bake` command provides the following features:
+
+* Build all Stackable product images
+* Build individual product images
+* Build individual product version images
+* Use one or more distributed docker cache servers
+* Publish images
 
 ## Usage examples
 
@@ -18,6 +26,9 @@ bake -p hello-world -i 0.0.0-dev
 
 # Build only one version [0.37.2] of OPA
 bake -p opa=0.37.2 -i 0.0.0-dev
+
+# Enable distributed docker cache (requires credentials to access the cache registry)
+bake -p opa --cache
 
 # Build half of all versions defined for OPA
 bake -p opa -i 0.0.0-dev  --shard-count 2 --shard-index 0
@@ -66,15 +77,41 @@ in
 }
 ```
 
+## Development
+
+Create a virtual environment where you install the package in "editable" mode:
+
+Using `venv` and `pip`:
+
+```shell
+python -m venv ~/venv-image-tools-devel
+source ~/venv-image-tools-devel/bin/activate
+pip install --editable .
+```
+
+Using [pipx](https://pypa.github.io/pipx/):
+
+```shell
+pipx install --editable .
+```
+
+With the activated virtual environment, you can now run the tools from the `docker-images` repository and any local changes are immediately in effect.
+
 ## Release a new version
 
-Update the version in:
+1. Create a release PR where you:
+1.1. Update the version in:
 
 * `src/image_tools/version.py`
 * `README.md` : version and pip install command.
 
-Update the CHANGELOG.
-Commit and tag.
+1.2. Update the CHANGELOG.
+2. Tag the release commit after it is merged to `main`.
+3. Automated GH actions will publish the new version to PyPI.
+
+
+To publish manually (requires PyPI credentials):
+
 Build and publish:
 
 ```shell
