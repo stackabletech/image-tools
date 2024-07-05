@@ -16,7 +16,7 @@ classifiers = [
 ]
 dependencies = ["Jinja2>=3.1.2", "PyYAML>=6.0"]
 [project.optional-dependencies]
-lint = ['ruff>=0.4', 'mypy>=1.10']
+lint = ['ruff>=0.5', 'mypy>=1.10']
 publish = ['twine>=5.0', 'build>=1.2']
 
 [project.scripts]
