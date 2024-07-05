@@ -7,16 +7,18 @@ Usage:
     python -m image_tools.bake -p opa -i 22.12.0
 """
 
-import sys
 import copy
-from typing import List, Dict, Any
+import json
+import logging
+import sys
 from argparse import Namespace
 from datetime import datetime, timezone
-from subprocess import run, CalledProcessError
-import json
+from functools import cache
+from subprocess import CalledProcessError, run
+from typing import Any, Dict, List
 
-from .lib import Command
 from .args import bake_args, load_configuration
+from .lib import Command
 from .version import version
 
 
@@ -66,7 +68,9 @@ def generate_bakefile(args: Namespace, conf) -> Dict[str, Any]:
         product_name: str = product["name"]
         product_targets = {}
         for version_dict in product.get("versions", []):
-            product_targets.update(bakefile_product_version_targets(args, product_name, version_dict, product_names, build_cache))
+            product_targets.update(
+                bakefile_product_version_targets(args, product_name, version_dict, product_names, build_cache)
+            )
         groups[product_name] = {
             "targets": list(product_targets.keys()),
         }
@@ -111,12 +115,12 @@ def bakefile_product_version_targets(
         target_name: {
             "annotations": [
                 f"org.opencontainers.image.created={rfc3339_date_time}",
-                f"org.opencontainers.image.revision={revision}"
+                f"org.opencontainers.image.revision={revision}",
             ],
             "labels": {
                 "org.opencontainers.image.created": rfc3339_date_time,
                 "build-date": rfc3339_date_time,
-                "org.opencontainers.image.revision": revision
+                "org.opencontainers.image.revision": revision,
             },
             "dockerfile": f"{product_name}/Dockerfile",
             "tags": tags,
@@ -127,14 +131,17 @@ def bakefile_product_version_targets(
                 f"stackable/image/{name}": f"target:{bakefile_target_name_for_product_version(name, version)}"
                 for name, version in versions.items()
                 if name in product_names
-            }
+            },
         },
     }
 
     if args.cache:
-        result[target_name]["cache-to"] = result[target_name]["cache-from"] = generate_cache_location(cache, target_name, args.architecture)
+        result[target_name]["cache-to"] = result[target_name]["cache-from"] = generate_cache_location(
+            cache, target_name, args.architecture
+        )
 
     return result
+
 
 def targets_for_selector(conf, selected_products: List[str]) -> List[str]:
     targets = []
@@ -181,20 +188,22 @@ def bake_command(args: Namespace, targets: List[str], bakefile) -> Command:
         stdin=json.dumps(bakefile),
     )
 
+
 def generate_cache_location(cache: List[Dict[str, str]], target_name: str, arch: str) -> List[str]:
     cache_copy = copy.deepcopy(cache)
     result = []
 
     for backend in cache_copy:
-        if 'ref_prefix' in backend:
+        if "ref_prefix" in backend:
             # Need to replace the / from values like linux/amd64 because otherwise
             # the cache ref would be invalid.
-            arch = arch.replace('/', '_')
+            arch = arch.replace("/", "_")
             backend["ref"] = f"{backend['ref_prefix']}:{target_name}-{arch}"
             del backend["ref_prefix"]
         result.append(",".join([f"{k}={v}" for k, v in backend.items()]))
 
     return result
+
 
 def main() -> int:
     """Generate a Docker bake file from conf.py and build the given args.product images."""
@@ -228,11 +237,14 @@ def main() -> int:
 
     return result.returncode
 
+
+@cache
 def get_git_revision():
     try:
-        result = run(['git', 'rev-parse', 'HEAD'], capture_output=True, text=True, check=True)
+        result = run(["git", "rev-parse", "HEAD"], capture_output=True, text=True, check=True)
         return result.stdout.strip()
-    except CalledProcessError:
+    except CalledProcessError as e:
+        logging.error("Failed to get git revision", e)
         return None
 
 
