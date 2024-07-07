@@ -22,19 +22,32 @@ Below are some common usage examples:
 
 ```shell
 # Build images of the hello-world containers
-bake -p hello-world -i 0.0.0-dev
+bake --product hello-world
 
 # Build only one version [0.37.2] of OPA
-bake -p opa=0.37.2 -i 0.0.0-dev
+bake --product opa=0.37.2
+
+# Dry run. Do not buikd anything. Print the the generated Bakefile.
+bake --product hello-world --dry
+
+# Build all OPA images and set the organisation to "sandbox"
+bake --product opa=0.37.2 --organization sandbox
+
+# Build all OPA images and set the image version to a release 24.7.0
+bake --product opa --image-version 24.7.0
 
 # Enable distributed docker cache (requires credentials to access the cache registry)
-bake -p opa --cache
+bake --product opa --cache
+
+# Build the HBase images but use Java 21 instead of the values in conf.py
+# for the java-base and java-devel images.
+bake --product hbase --build-arg 'java-base=21' --build-arg 'java-devel=21'
 
 # Build half of all versions defined for OPA
-bake -p opa -i 0.0.0-dev  --shard-count 2 --shard-index 0
+bake --product opa --shard-count 2 --shard-index 0
 
 # Build the other half of all versions defined for OPA
-bake -p opa -i 0.0.0-dev  --shard-count 2 --shard-index 1
+bake --product opa --shard-count 2 --shard-index 1
 ```
 
 ## Installation
@@ -63,8 +76,8 @@ let
   image-tools = pkgs.callPackage (pkgs.fetchFromGitHub {
     owner = "stackabletech";
     repo = "image-tools";
-    rev = "caa4d993bcbb8b884097c89a54ee246f975e2ec6";
-    hash = "sha256-gjTCroHw4iJhXPW+s3mHBzIH8seIKH1tPb82lUb8+a0="; # comment out to find new hashes when upgrading
+    rev = "caa4d993bcbb8b884097c89a54ee246f975e2ec6"; # pragma: allowlist secret
+    hash = "sha256-gjTCroHw4iJhXPW+s3mHBzIH8seIKH1tPb82lUb8+a0="; # pragma: allowlist secret ; comment out to find new hashes when upgrading
   } + "/image-tools.nix") {};
 in
 {
@@ -96,6 +109,19 @@ pipx install --editable .
 ```
 
 With the activated virtual environment, you can now run the tools from the `docker-images` repository and any local changes are immediately in effect.
+
+We also recommend installing the `pre-commit` hooks in the activated virtual environment.
+
+```shell
+pip install pre-commit
+pre-commit install
+```
+
+To run the hooks, stage the changes you want to commit and run:
+
+```shell
+pre-commit run
+```
 
 ## Release a new version
 

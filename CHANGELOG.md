@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Added
+
+- New `bake` command line argument `--build-arg` to override conf.py build arguments ([#38])
+
+[#38]: https://github.com/stackabletech/image-tools/pull/38
+
+
 ## [0.0.11]
 
 ### Added
