@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.0.12] - 2024-07-08
+
 ### Added
 
 - New `bake` command line argument `--build-arg` to override conf.py build arguments ([#38])
