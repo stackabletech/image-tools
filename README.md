@@ -15,6 +15,35 @@ The `bake` command provides the following features:
 * Use one or more distributed docker cache servers
 * Publish images
 
+## Docker Build Cache
+
+Docker's `buildx` plugin supports different types of build cache back ends. Since Stackable product images are built by distributed GitHub actions, the distributed back ends are relevant.
+
+To use the build cache, you have to configure one or more back ends and enable them by calling `bake` with the `--cache` flag.
+
+To configure one or more cache back ends, add the relevant properties to the `cache` property of the configuration module.
+
+Here an example with the `registry` backend:
+
+```python
+cache = [
+    {
+        "type": "registry",
+        "ref_prefix": "build-repo.stackable.tech:8083/sandbox/cache",
+        "mode": "max",
+        "compression": "zstd",
+        "ignore-error": "true",
+    },
+]
+```
+
+Here `ref_prefix` is used to build the unique `ref` property for each target.
+
+NOTE: it's your responsibility to ensure that `bake` can read/write to the cache registry by performing a `docker login` before running `bake`.
+
+
+For more information about the cache back ends, see the [Docker documentation](https://docs.docker.com/build/cache/backends/).
+
 ## Usage examples
 
 Run either `bake` or `check-container` with `--help` to get an overview of the accepted flags and their functionality.
