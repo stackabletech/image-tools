@@ -4,6 +4,8 @@ import re
 import importlib.util
 import sys
 import os
+from types import ModuleType
+from typing import List, Tuple
 
 from .version import version
 
@@ -20,14 +22,13 @@ def bake_args() -> Namespace:
     )
     parser.add_argument("-v", "--version", help="Display version", action="store_true")
 
-    (
-        parser.add_argument(
-            "-c",
-            "--configuration",
-            help="Configuration file. Default: './conf.py'.",
-            default="./conf.py",
-        ),
+    parser.add_argument(
+        "-c",
+        "--configuration",
+        help="Configuration file. Default: './conf.py'.",
+        default="./conf.py",
     )
+
     parser.add_argument(
         "-i",
         "--image-version",
@@ -75,13 +76,19 @@ def bake_args() -> Namespace:
         help="Image registry to publish to. Default: docker.stackable.tech.",
         default="docker.stackable.tech",
     )
-    (
-        parser.add_argument(
-            "--export-tags-file",
-            help="Write target image tags to a text file. Useful for signing or other follow-up CI steps.",
-        ),
+    parser.add_argument(
+        "--export-tags-file",
+        help="Write target image tags to a text file. Useful for signing or other follow-up CI steps.",
     )
-    (parser.add_argument("--cache", help="Enable distributed build cache", action="store_true"),)
+
+    parser.add_argument("--cache", help="Enable distributed build cache", action="store_true")
+
+    parser.add_argument(
+        "--build-arg",
+        help="Override build arguments. Expecting an KEY=VALUE format. The key is case insensitive.",
+        nargs="*",
+        type=check_build_arg,
+    )
 
     result = parser.parse_args()
 
@@ -133,6 +140,13 @@ def check_image_version_format(image_version) -> str:
     raise ValueError(f"Invalid image version: {image_version}")
 
 
+def check_build_arg(build_args: str) -> Tuple[str, str]:
+    kv = build_args.split("=")
+    if len(kv) != 2:
+        raise ValueError
+    return kv[0], kv[1]
+
+
 def preflight_args() -> Namespace:
     parser = ArgumentParser(
         description="Run OpenShift certification checks and submit results to RedHat Partner Connect portal"
@@ -180,13 +194,11 @@ def preflight_args() -> Namespace:
         help="Name of the preflight program. Default: preflight",
         default="preflight",
     )
-    (
-        parser.add_argument(
-            "-c",
-            "--configuration",
-            help="Configuration file.",
-            default="./conf.py",
-        ),
+    parser.add_argument(
+        "-c",
+        "--configuration",
+        help="Configuration file.",
+        default="./conf.py",
     )
 
     result = parser.parse_args()
@@ -206,7 +218,11 @@ def check_architecture_input(architecture: str) -> str:
     return architecture
 
 
-def load_configuration(conf_file_name: str):
+def load_configuration(conf_file_name: str, user_build_args: List[Tuple[str, str]] = []) -> ModuleType:
+    """Load the configuration module conf.py and potentially override build arguments
+    with values provided by the user with the --build-arg flag.
+    The build arguments are key, value pairs from the "conf.products.<product name>.versions.<version>" dictionary.
+    """
     module_name = "conf"
     sys.path.append(str(os.getcwd()))
     spec = importlib.util.spec_from_file_location(module_name, conf_file_name)
@@ -215,5 +231,18 @@ def load_configuration(conf_file_name: str):
         sys.modules[module_name] = module
         if spec.loader:
             spec.loader.exec_module(module)
+            override_build_args(module, user_build_args)
             return module
     raise ImportError(name=module_name, path=conf_file_name)
+
+
+def override_build_args(conf: ModuleType, user_build_args: List[Tuple[str, str]] = []) -> None:
+    if not user_build_args:
+        return
+    # convert user_build_args to a dictionary for easier lookup
+    user_build_args_dict = {kv[0]: kv[1] for kv in user_build_args}
+    for product in conf.products:
+        for conf_build_args in product["versions"]:
+            for arg in conf_build_args:
+                if arg in user_build_args_dict:
+                    conf_build_args[arg] = user_build_args_dict[arg]

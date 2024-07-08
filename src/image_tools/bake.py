@@ -22,7 +22,7 @@ from .lib import Command
 from .version import version
 
 
-def build_image_args(version: Dict[str, str], release_version: str):
+def build_image_args(conf_build_args: Dict[str, str], release_version: str):
     """
     Returns a list of --build-arg command line arguments that are used by the
     docker build command.
@@ -33,7 +33,7 @@ def build_image_args(version: Dict[str, str], release_version: str):
     """
     result = {}
 
-    for k, v in version.items():
+    for k, v in conf_build_args.items():
         result[k.upper()] = v
     result["RELEASE"] = release_version
 
@@ -213,7 +213,7 @@ def main() -> int:
         print(version())
         return 0
 
-    conf = load_configuration(args.configuration)
+    conf = load_configuration(args.configuration, args.build_arg)
 
     bakefile = generate_bakefile(args, conf)
 
