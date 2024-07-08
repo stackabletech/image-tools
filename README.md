@@ -70,6 +70,7 @@ bake --product opa --cache
 
 # Build the HBase images but use Java 21 instead of the values in conf.py
 # for the java-base and java-devel images.
+# It doesn't matter if you use lower or upper case for the build argument names.
 bake --product hbase --build-arg 'java-base=21' --build-arg 'java-devel=21'
 
 # Build half of all versions defined for OPA
