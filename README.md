@@ -27,7 +27,7 @@ bake --product hello-world
 # Build only one version [0.37.2] of OPA
 bake --product opa=0.37.2
 
-# Dry run. Do not buikd anything. Print the the generated Bakefile.
+# Dry run. Do not build anything. Print the the generated Bakefile.
 bake --product hello-world --dry
 
 # Build all OPA images and set the organisation to "sandbox"
