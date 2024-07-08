@@ -8,7 +8,12 @@ All notable changes to this project will be documented in this file.
 
 - New `bake` command line argument `--build-arg` to override conf.py build arguments ([#38])
 
+### Fixed
+
+- check-container: fix regression introduced by 0.0.9. Add dummy cache property ([#39])
+
 [#38]: https://github.com/stackabletech/image-tools/pull/38
+[#39]: https://github.com/stackabletech/image-tools/pull/39
 
 
 ## [0.0.11]
