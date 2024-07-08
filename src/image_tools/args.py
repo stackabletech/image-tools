@@ -85,7 +85,7 @@ def bake_args() -> Namespace:
 
     parser.add_argument(
         "--build-arg",
-        help="Override build arguments. Expecting an ARGV=VALUE format.",
+        help="Override build arguments. Expecting an KEY=VALUE format. The key is case insensitive.",
         nargs="*",
         type=check_build_arg,
     )
