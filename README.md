@@ -31,7 +31,7 @@ bake --product opa=0.37.2
 bake --product hello-world --dry
 
 # Build all OPA images and set the organisation to "sandbox"
-bake --product opa=0.37.2 --organization sandbox
+bake --product opa --organization sandbox
 
 # Build all OPA images and set the image version to a release 24.7.0
 bake --product opa --image-version 24.7.0
