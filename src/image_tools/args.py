@@ -206,6 +206,10 @@ def preflight_args() -> Namespace:
     if result.submit and not result.token:
         raise ValueError("Missing API token for submitting results.")
 
+    # Dummy property needed by the generate_bakefile() function
+    # but not used by the preflight tool.
+    result.cache = False
+
     return result
 
 
