@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Added
+
+- `conf.py` now can contain a `args` dict, which contains arguments available to all products, they can be overridden by product specific or CLI arguments ([#41])
+
+### Fixed
+
+- `--build-arg` was not case-insensitive as claimed in the docs, this has been  fixed ([#41])
+
+[#41]: https://github.com/stackabletech/image-tools/pull/41
+
 ## [0.0.12] - 2024-07-08
 
 ### Added
