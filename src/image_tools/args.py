@@ -267,4 +267,4 @@ def assemble_final_build_args(conf: ModuleType, cli_build_args: List[Tuple[str, 
             updated_args_list.append(final_args)
 
         # Update product["args"] with the new list of merged argument dictionaries
-        product["args"] = updated_args_list
+        product["versions"] = updated_args_list
