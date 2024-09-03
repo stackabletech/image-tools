@@ -222,7 +222,7 @@ def check_architecture_input(architecture: str) -> str:
     return architecture
 
 
-def load_configuration(conf_file_name: str, user_build_args: List[Tuple[str, str]] = []) -> ModuleType:
+def load_configuration(conf_file_name: str, cli_build_args: List[Tuple[str, str]] = []) -> ModuleType:
     """Load the configuration module conf.py and potentially override build arguments
     with values provided by the user with the --build-arg flag.
     The build arguments are key, value pairs from the "conf.products.<product name>.versions.<version>" dictionary.
@@ -235,18 +235,36 @@ def load_configuration(conf_file_name: str, user_build_args: List[Tuple[str, str
         sys.modules[module_name] = module
         if spec.loader:
             spec.loader.exec_module(module)
-            override_build_args(module, user_build_args)
+            assemble_final_build_args(module, cli_build_args)
             return module
     raise ImportError(name=module_name, path=conf_file_name)
 
+def assemble_final_build_args(conf: ModuleType, cli_build_args: List[Tuple[str, str]] = []) -> None:
+    cli_build_args = cli_build_args or []
+    # Convert user_build_args to a dictionary with lowercase keys for easier, case-insensitive lookup
+    cli_build_args_dict = {k.lower(): v for k, v in cli_build_args}
 
-def override_build_args(conf: ModuleType, user_build_args: List[Tuple[str, str]] = []) -> None:
-    if not user_build_args:
-        return
-    # convert user_build_args to a dictionary for easier lookup
-    user_build_args_dict = {kv[0]: kv[1] for kv in user_build_args}
+    global_build_args = {k.lower(): v for k, v in (getattr(conf, "args", {}) or {}).items()}
+
     for product in conf.products:
-        for conf_build_args in product["versions"]:
-            for arg in conf_build_args:
-                if arg in user_build_args_dict:
-                    conf_build_args[arg] = user_build_args_dict[arg]
+        # Prepare a new list to store the updated dictionaries
+        updated_args_list = []
+
+        # Iterate through each dictionary in the product["args"] list.
+        # Each of those dictonaries represents a version of a product we build.
+        for conf_build_args in product.get("versions", []):
+            # Normalize product-specific arguments to lower case for all handling in here
+            product_args = {k.lower(): v for k, v in conf_build_args.items()}
+
+            # Merge global_build_args and product_args, prioritizing product_args
+            merged_args = global_build_args.copy()
+            merged_args.update(product_args)
+
+            # Override with CLI-provided args (cli_build_args_dict) -> they have highest priority
+            final_args = {**merged_args, **cli_build_args_dict}
+
+            # Add the final arguments to the updated list
+            updated_args_list.append(final_args)
+
+        # Update product["args"] with the new list of merged argument dictionaries
+        product["args"] = updated_args_list
