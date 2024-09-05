@@ -1,31 +1,49 @@
-# See https://pre-commit.com for more information
-# See https://pre-commit.com/hooks.html for more hooks
+---
+default_language_version:
+  node: system
+
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.6.0
+    rev: 2c9f875913ee60ca25ce70243dc24d5b6415598c # 4.6.0
     hooks:
       - id: trailing-whitespace
       - id: end-of-file-fixer
-      - id: check-yaml
-        exclude: examples/
-      - id: check-json
-      - id: check-toml
+      - id: detect-aws-credentials
+        args: ["--allow-missing-credentials"]
+      - id: detect-private-key
       - id: check-added-large-files
       - id: check-symlinks
-  - repo: https://github.com/Yelp/detect-secrets
-    rev: v1.5.0
+
+  - repo: https://github.com/adrienverge/yamllint
+    rev: 81e9f98ffd059efe8aa9c1b1a42e5cce61b640c6 # 1.35.1
     hooks:
-      - id: detect-secrets
-        exclude: test/
+      - id: yamllint
+
+  - repo: https://github.com/igorshubovych/markdownlint-cli
+    rev: f295829140d25717bc79368d3f966fc1f67a824f # 0.41.0
+    hooks:
+      - id: markdownlint
+
+  - repo: https://github.com/koalaman/shellcheck-precommit
+    rev: 2491238703a5d3415bb2b7ff11388bf775372f29 # 0.10.0
+    hooks:
+      - id: shellcheck
+        args: ["--severity=info"]
+
+  - repo: https://github.com/rhysd/actionlint
+    rev: 62dc61a45fc95efe8c800af7a557ab0b9165d63b # 1.7.1
+    hooks:
+      - id: actionlint
+
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    # Ruff version.
-    rev: v0.5.1
+    rev: f1ebc5730d98440041cc43e4d69829ad598ae1e7 # 0.6.3
     hooks:
       - id: ruff
-        args: [ --fix ]
+        args: [--fix]
       - id: ruff-format
+
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: 'v1.10.1'
+    rev: d4911cfb7f1010759fde68da196036feeb25b99d # 1.11.2
     hooks:
       - id: mypy
         args: ['--install-types', '--non-interactive']
@@ -33,6 +51,7 @@ repos:
           - "Jinja2>=3.1.2"
           - "PyYAML>=6.0"
         exclude: examples/
+
   - repo: local
     hooks:
       - id: unittest

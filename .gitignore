@@ -1,4 +1,8 @@
+# VENV
+.venv
 .env
+
+# Other
 build
 dist
 __pycache__
