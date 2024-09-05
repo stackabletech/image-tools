@@ -39,7 +39,7 @@ repos:
     rev: f1ebc5730d98440041cc43e4d69829ad598ae1e7 # 0.6.3
     hooks:
       - id: ruff
-        args: [ --fix ]
+        args: [--fix]
       - id: ruff-format
 
   - repo: https://github.com/pre-commit/mirrors-mypy
