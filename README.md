@@ -1,4 +1,4 @@
-# image-tools v0.0.12
+# image-tools v0.0.13
 
 Command line tools to manage Stackable container images available at [docker-images](https://github.com/stackabletech/docker-images)
 
@@ -40,7 +40,6 @@ cache = [
 Here `ref_prefix` is used to build the unique `ref` property for each target.
 
 NOTE: it's your responsibility to ensure that `bake` can read/write to the cache registry by performing a `docker login` before running `bake`.
-
 
 For more information about the cache back ends, see the [Docker documentation](https://docs.docker.com/build/cache/backends/).
 
@@ -165,7 +164,6 @@ pre-commit run
 1.2. Update the CHANGELOG.
 2. Tag the release commit after it is merged to `main`.
 3. Automated GH actions will publish the new version to PyPI.
-
 
 To publish manually (requires PyPI credentials):
 

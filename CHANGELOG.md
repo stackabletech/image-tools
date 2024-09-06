@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## 0.0.13 - 2024-09-06
+
 ### Added
 
 - `conf.py` now can contain a `args` dict, which contains arguments available to all products, they can be overridden by product specific or CLI arguments ([#41])
@@ -27,7 +29,6 @@ All notable changes to this project will be documented in this file.
 [#38]: https://github.com/stackabletech/image-tools/pull/38
 [#39]: https://github.com/stackabletech/image-tools/pull/39
 
-
 ## [0.0.11]
 
 ### Added
@@ -45,7 +46,6 @@ All notable changes to this project will be documented in this file.
 
 [#31]: https://github.com/stackabletech/image-tools/pull/31
 [#32]: https://github.com/stackabletech/image-tools/pull/32
-
 
 ## [0.0.9] - 2024-07-02
 
