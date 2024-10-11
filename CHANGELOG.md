@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## Added
+
+- Add `--target-containerfile` argument to override the default `Dockerfile` value ([#44]).
+
+[#44]: https://github.com/stackabletech/image-tools/pull/44
+
 ## 0.0.13 - 2024-09-06
 
 ### Added
