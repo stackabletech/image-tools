@@ -90,6 +90,12 @@ def bake_args() -> Namespace:
         type=check_build_arg,
     )
 
+    parser.add_argument(
+        "--target-containerfile",
+        help="Override the target containerfile used, points to <PRODUCT>/<TARGET_CONTAINERFILE>. Default: Dockerfile",
+        default="Dockerfile",
+    )
+
     result = parser.parse_args()
 
     if result.shard_index >= result.shard_count:
@@ -238,6 +244,7 @@ def load_configuration(conf_file_name: str, cli_build_args: List[Tuple[str, str]
             assemble_final_build_args(module, cli_build_args)
             return module
     raise ImportError(name=module_name, path=conf_file_name)
+
 
 def assemble_final_build_args(conf: ModuleType, cli_build_args: List[Tuple[str, str]] = []) -> None:
     cli_build_args = cli_build_args or []
