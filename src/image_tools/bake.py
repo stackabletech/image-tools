@@ -122,7 +122,7 @@ def bakefile_product_version_targets(
                 "build-date": rfc3339_date_time,
                 "org.opencontainers.image.revision": revision,
             },
-            "dockerfile": f"{product_name}/Dockerfile",
+            "dockerfile": f"{product_name}/{args.target_containerfile}",
             "tags": tags,
             "args": build_args,
             "platforms": [args.architecture],
