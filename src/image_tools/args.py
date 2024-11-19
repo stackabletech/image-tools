@@ -84,9 +84,9 @@ def bake_args() -> Namespace:
     parser.add_argument("--cache", help="Enable distributed build cache", action="store_true")
 
     parser.add_argument(
-        "--show-products",
+        "--list-products",
         action="store_true",
-        help="Display structured output of products and their versions in JSON formatW",
+        help="Display structured output of products and their versions in JSON format",
     )
 
     parser.add_argument(
