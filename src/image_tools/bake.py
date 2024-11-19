@@ -223,7 +223,8 @@ def main() -> int:
         return 0
 
     conf = load_configuration(args.configuration, args.build_arg)
-    if args.show_products:
+
+    if args.list_products:
         print_product_versions_json(conf)
         return 0
 
