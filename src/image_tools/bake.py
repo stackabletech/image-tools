@@ -22,6 +22,15 @@ from .lib import Command
 from .version import version
 
 
+def print_product_versions_json(conf) -> None:
+    """Prints a JSON structured output of products and their versions."""
+    products_info = {}
+    for product in conf.products:
+        products_info[product["name"]] = [version["product"] for version in product.get("versions", [])]
+
+    print(json.dumps(products_info, indent=2))
+
+
 def build_image_args(conf_build_args: Dict[str, str], release_version: str):
     """
     Returns a list of --build-arg command line arguments that are used by the
@@ -214,6 +223,9 @@ def main() -> int:
         return 0
 
     conf = load_configuration(args.configuration, args.build_arg)
+    if args.show_products:
+        print_product_versions_json(conf)
+        return 0
 
     bakefile = generate_bakefile(args, conf)
 

@@ -84,6 +84,12 @@ def bake_args() -> Namespace:
     parser.add_argument("--cache", help="Enable distributed build cache", action="store_true")
 
     parser.add_argument(
+        "--show-products",
+        action="store_true",
+        help="Display structured output of products and their versions in JSON formatW",
+    )
+
+    parser.add_argument(
         "--build-arg",
         help="Override build arguments. Expecting an KEY=VALUE format. The key is case insensitive.",
         nargs="*",
