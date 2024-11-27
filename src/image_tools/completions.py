@@ -29,45 +29,49 @@ def nushell_completion(completions):
     completion_lines = "\n".join(completion_lines)
 
     script_template = f"""
-def list_products_completions [] {{
-  let output = (bake --list-products | from json)
-  let products = $output | columns
-  return $products
+module bake-completions {{
+    def list_products_completions [] {{
+      let output = (bake --list-products | from json)
+      let products = $output | columns
+      return $products
+    }}
+    
+    def list_versions_completions [product] {{
+      let output = (bake --list-products | from json)
+      let versions = $output | get $product | each {{|version| $"($product)=($version)"}}
+      return $versions
+    }}
+    
+    export extern "bake" [
+    {completion_lines}
+      --product: string@"nu-complete product" # Product to build images for. For example 'druid' or 'druid=28.0.1' to build a specific version.
+    ]
+    
+    def "nu-complete product" [context: string] {{
+      # This function will not currently work properly should one full product be a prefix of another product name
+    
+      # context will be something like "bake --product <something>"
+      # So, after splitting it up we'll have
+      # - Row 0: "bake"
+      # - Row 1: "--product"
+      # - Row 2: "<something>" (e.g. empty or "hb" or "hbase" or "hbase=2.6.0" or similar
+      let parts = ($context | split row ' ')
+      let product_specification = $parts | get 2
+      let product_parts = $product_specification | split row '='
+      let product = $product_parts | get 0
+    
+      let all_products = list_products_completions
+    
+      # Check if the product that was specified is already "complete" (can be found in the list of all products)
+      if ($all_products | any {{ |item| $item == $product }}) {{
+        list_versions_completions $product
+      }} else {{
+        return $all_products
+      }}
+    }}
 }}
 
-def list_versions_completions [product] {{
-  let output = (bake --list-products | from json)
-  let versions = $output | get $product | each {{|version| $"($product)=($version)"}}
-  return $versions
-}}
-
-export extern "bake" [
-{completion_lines}
-  --product: string@"nu-complete product" # Product to build images for. For example 'druid' or 'druid=28.0.1' to build a specific version.
-]
-
-def "nu-complete product" [context: string] {{
-  # This function will not currently work properly should one full product be a prefix of another product name
-
-  # context will be something like "bake --product <something>"
-  # So, after splitting it up we'll have
-  # - Row 0: "bake"
-  # - Row 1: "--product"
-  # - Row 2: "<something>" (e.g. empty or "hb" or "hbase" or "hbase=2.6.0" or similar
-  let parts = ($context | split row ' ')
-  let product_specification = $parts | get 2
-  let product_parts = $product_specification | split row '='
-  let product = $product_parts | get 0
-
-  let all_products = list_products_completions
-
-  # Check if the product that was specified is already "complete" (can be found in the list of all products)
-  if ($all_products | any {{ |item| $item == $product }}) {{
-    list_versions_completions $product
-  }} else {{
-    return $all_products
-  }}
-}}
+export use bake-completions * 
 """
     print(script_template)
 
