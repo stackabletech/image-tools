@@ -16,7 +16,7 @@ DEFAULT_IMAGE_VERSION_FORMATS = [
 ]
 
 
-def bake_args() -> Namespace:
+def build_bake_argparser() -> ArgumentParser:
     parser = ArgumentParser(
         description=f"bake {version()} Build and publish product images. Requires docker and buildx (https://github.com/docker/buildx)."
     )
@@ -101,6 +101,18 @@ def bake_args() -> Namespace:
         help="Override the target containerfile used, points to <PRODUCT>/<TARGET_CONTAINERFILE>. Default: Dockerfile",
         default="Dockerfile",
     )
+
+    parser.add_argument(
+        "--completions",
+        choices=["nushell"],
+        help="Generate shell completions. Currently supports: nushell.",
+    )
+
+    return parser
+
+
+def bake_args() -> Namespace:
+    parser = build_bake_argparser()
 
     result = parser.parse_args()
 

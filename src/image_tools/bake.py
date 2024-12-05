@@ -17,6 +17,7 @@ from functools import cache
 from subprocess import CalledProcessError, run
 from typing import Any, Dict, List
 
+from .completions import print_completion
 from .args import bake_args, load_configuration
 from .lib import Command
 from .version import version
@@ -220,6 +221,10 @@ def main() -> int:
 
     if args.version:
         print(version())
+        return 0
+
+    if args.completions:
+        print_completion(args.completions)
         return 0
 
     conf = load_configuration(args.configuration, args.build_arg)

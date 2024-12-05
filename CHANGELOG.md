@@ -8,9 +8,11 @@ All notable changes to this project will be documented in this file.
 
 - Add `--target-containerfile` argument to override the default `Dockerfile` value ([#44]).
 - Add `--list-products` argument to get a machine-readable (JSON) output of all products and their versions ([#45]).
+- Add `--completions nushell` support ([#46])
 
 [#44]: https://github.com/stackabletech/image-tools/pull/44
 [#45]: https://github.com/stackabletech/image-tools/pull/45
+[#46]: https://github.com/stackabletech/image-tools/pull/46
 
 ## 0.0.13 - 2024-09-06
 
