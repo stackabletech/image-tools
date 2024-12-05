@@ -155,22 +155,15 @@ pre-commit run
 
 ## Release a new version
 
-1. Create a release PR where you:
-1.1. Update the version in:
+A new release involves bumping the package version and publishing it to PyPI.
+The easiest way to publish to PyPI is to allow the release GitHub action to do it for you.
+This action is also the preferred way, as it will publish a verified package using PyPI attestations.
 
-* `src/image_tools/version.py`
-* `README.md` : version and pip install command.
+To release a new version follow the steps below:
 
-1.2. Update the CHANGELOG.
-2. Tag the release commit after it is merged to `main`.
-3. Automated GH actions will publish the new version to PyPI.
-
-To publish manually (requires PyPI credentials):
-
-Build and publish:
-
-```shell
-rm -rf dist/
-python -m build --sdist --wheel .
-twine upload dist/*
-```
+1. Create a new Git branch. For example `release-1.2.3`.
+2. Update the version string (`1.2.3`) in: `src/image_tools/version.py` and`README.md`.
+3. Commit, push and create a PR.
+4. After the PR is merged, switch to the `main` branch and update it by executing `git pull`.
+5. On the `main` branch, create and push the release tag. For example: `git tag 1.2.3 -m 1.2.3 && git push origin 1.2.3`.
+6. Done!
