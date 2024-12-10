@@ -120,6 +120,22 @@ in
 }
 ```
 
+### Shell Autocompletion
+
+#### Nushell
+
+Run this command for each new version of bake:
+
+```text
+bake --completions nushell | save -f ~/.config/nushell/completions-bake.nu
+```
+
+And then include this in your `~/.config/nushell/config.nu` file:
+
+```text
+source completions-bake.nu
+```
+
 ## Development
 
 Create a virtual environment where you install the package in "editable" mode:
