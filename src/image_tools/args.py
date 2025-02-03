@@ -203,8 +203,8 @@ def preflight_args() -> Namespace:
     parser.add_argument(
         "-o",
         "--organization",
-        help="Organization name within the given registry. Default: stackable",
-        default="stackable",
+        help="Organization name within the given registry. Default: sdp",
+        default="sdp",
     )
     parser.add_argument(
         "-r",

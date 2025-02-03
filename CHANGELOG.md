@@ -12,7 +12,7 @@ All notable changes to this project will be documented in this file.
 
 ## Changed
 
-- Update default `--registry` value to oci ([#49]).
+- Update default `--registry` value to `oci.stackable.tech` and `--organization` to `sdp`([#49]).
 
 [#44]: https://github.com/stackabletech/image-tools/pull/44
 [#45]: https://github.com/stackabletech/image-tools/pull/45
