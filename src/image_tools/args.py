@@ -67,14 +67,14 @@ def build_bake_argparser() -> ArgumentParser:
     parser.add_argument(
         "-o",
         "--organization",
-        help="Organization name within the given registry. Default: stackable.",
-        default="stackable",
+        help="Organization name within the given registry. Default: sdp.",
+        default="sdp",
     )
     parser.add_argument(
         "-r",
         "--registry",
-        help="Image registry to publish to. Default: docker.stackable.tech.",
-        default="docker.stackable.tech",
+        help="Image registry to publish to. Default: oci.stackable.tech.",
+        default="oci.stackable.tech",
     )
     parser.add_argument(
         "--export-tags-file",
@@ -203,14 +203,14 @@ def preflight_args() -> Namespace:
     parser.add_argument(
         "-o",
         "--organization",
-        help="Organization name within the given registry. Default: stackable",
-        default="stackable",
+        help="Organization name within the given registry. Default: sdp",
+        default="sdp",
     )
     parser.add_argument(
         "-r",
         "--registry",
-        help="Image registry to publish to. Default: docker.stackable.tech",
-        default="docker.stackable.tech",
+        help="Image registry to publish to. Default: oci.stackable.tech",
+        default="oci.stackable.tech",
     )
     parser.add_argument(
         "-e",
