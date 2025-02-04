@@ -4,13 +4,15 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
-## Added
+## [0.0.14] - 2025-02-04
+
+### Added
 
 - Add `--target-containerfile` argument to override the default `Dockerfile` value ([#44]).
 - Add `--list-products` argument to get a machine-readable (JSON) output of all products and their versions ([#45]).
 - Add `--completions nushell` support ([#46])
 
-## Changed
+### Changed
 
 - Update default `--registry` value to `oci.stackable.tech` and `--organization` to `sdp`([#49]).
 
@@ -19,7 +21,7 @@ All notable changes to this project will be documented in this file.
 [#46]: https://github.com/stackabletech/image-tools/pull/46
 [#49]: https://github.com/stackabletech/image-tools/pull/49
 
-## 0.0.13 - 2024-09-06
+## [0.0.13] - 2024-09-06
 
 ### Added
 
