@@ -44,7 +44,7 @@ def build_image_args(conf_build_args: Dict[str, str], release_version: str):
     result = {}
 
     for k, v in conf_build_args.items():
-        result[k.upper()] = v
+        result[k.replace("-", "_").replace("/", "_").upper()] = v
     result["RELEASE"] = release_version
 
     return result
@@ -81,7 +81,7 @@ def generate_bakefile(args: Namespace, conf) -> Dict[str, Any]:
             product_targets.update(
                 bakefile_product_version_targets(args, product_name, version_dict, product_names, build_cache)
             )
-        groups[product_name] = {
+        groups[product_name.replace("/", "_")] = {
             "targets": list(product_targets.keys()),
         }
         targets.update(product_targets)
@@ -98,7 +98,7 @@ def bakefile_target_name_for_product_version(product_name: str, version: str) ->
     """
     Creates a normalized Bakefile target name for a given (product, version) combination.
     """
-    return f"{product_name}-{version.replace('.', '_')}"
+    return f"{product_name.replace('/', '_')}-{version.replace('.', '_')}"
 
 
 def bakefile_product_version_targets(
