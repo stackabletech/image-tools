@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+- Add support for bake target hierarchies ([#51])
+
+[#51]: https://github.com/stackabletech/image-tools/pull/51
+
 ## [0.0.14] - 2025-02-04
 
 ### Added

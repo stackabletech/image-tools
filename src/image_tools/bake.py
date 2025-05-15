@@ -62,7 +62,7 @@ def build_image_tags(image_name: str, image_version: str, product_version: str) 
 
 def generate_bakefile(args: Namespace, conf) -> Dict[str, Any]:
     """
-    Generates a Bakefile (https://docs.docker.com/build/bake/file-definition/) describing how to build the image graph.
+    Generates a Bakefile (see https://docs.docker.com/build/bake/reference) describing how to build the image graph.
 
     build_and_publish_images() ensures that only the desired images are actually built.
     """
