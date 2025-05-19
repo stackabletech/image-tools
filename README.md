@@ -1,4 +1,4 @@
-# image-tools v0.0.15
+# image-tools v0.0.16
 
 Command line tools to manage Stackable container images available at [docker-images](https://github.com/stackabletech/docker-images)
 
