@@ -4,11 +4,17 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.0.17] - 2025-06-25
+
+- Add a separate `--release` argument to `bake` for the SDP version ([#55])
+
+[#55]: https://github.com/stackabletech/image-tools/pull/55
+
+## [0.0.16] - 2025-05-19
+
 - Add support for bake target hierarchies ([#51])
-- Add a separate `--release` argument for the SDP version ([#55])
 
 [#51]: https://github.com/stackabletech/image-tools/pull/51
-[#55]: https://github.com/stackabletech/image-tools/pull/55
 
 ## [0.0.14] - 2025-02-04
 
@@ -36,7 +42,7 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 
-- `--build-arg` was not case-insensitive as claimed in the docs, this has been  fixed ([#41]).
+- `--build-arg` was not case-insensitive as claimed in the docs, this has been fixed ([#41]).
 
 [#41]: https://github.com/stackabletech/image-tools/pull/41
 
