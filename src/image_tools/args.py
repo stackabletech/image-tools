@@ -15,6 +15,11 @@ DEFAULT_IMAGE_VERSION_FORMATS = [
     re.compile(r"0\.0\.0-dev(-.+)?"),
 ]
 
+DEFAULT_RELEASE_FORMATS = [
+    re.compile(r"[2-9][0-9]\.[1-9][0-2]?\.\d+(-rc\d+)?"),
+    re.compile(r"0\.0\.0-dev"),
+]
+
 
 def build_bake_argparser() -> ArgumentParser:
     parser = ArgumentParser(
@@ -35,6 +40,12 @@ def build_bake_argparser() -> ArgumentParser:
         type=check_image_version_format,
         default="0.0.0-dev",
         help="Image version. Default: 0.0.0-dev.",
+    )
+    parser.add_argument(
+        "--release",
+        type=check_release_format,
+        default="0.0.0-dev",
+        help="SDP release version. Default: 0.0.0-dev.",
     )
     parser.add_argument(
         "-p",
@@ -164,6 +175,43 @@ def check_image_version_format(image_version) -> str:
     raise ValueError(f"Invalid image version: {image_version}")
 
 
+def check_release_format(release) -> str:
+    """
+        Check release against allowed formats.
+
+    >>> check_release_format("23.4.0")
+    '23.4.0'
+    >>> check_release_format("23.4.0-rc1")
+    '23.4.0-rc1'
+    >>> check_release_format("0.0.0-dev")
+    '0.0.0-dev'
+    >>> check_release_format("0.0.0-dev-kebab")
+    Traceback (most recent call last):
+      File "<stdin>", line 1, in <module>
+      File "<stdin>", line 5, in check_release_format
+    ValueError: Invalid release: 0.0.0-dev-kebab
+    >>> check_release_format("23.11.1-dev-kaese")
+    Traceback (most recent call last):
+      File "<stdin>", line 1, in <module>
+      File "<stdin>", line 5, in check_release_format
+    ValueError: Invalid release: 23.11.1-dev-kaese
+    >>> check_release_format("23.04.0")
+    Traceback (most recent call last):
+      File "<stdin>", line 1, in <module>
+      File "<stdin>", line 5, in check_release_format
+    ValueError: Invalid release: 23.04.0
+    >>> check_release_format("23.4.0.prerelease")
+    Traceback (most recent call last):
+      File "<stdin>", line 1, in <module>
+      File "<stdin>", line 5, in check_release_format
+    ValueError: Invalid release: 23.4.0.prerelease
+    """
+    for p in DEFAULT_RELEASE_FORMATS:
+        if p.fullmatch(release):
+            return release
+    raise ValueError(f"Invalid release: {release}")
+
+
 def check_build_arg(build_args: str) -> Tuple[str, str]:
     kv = build_args.split("=")
     if len(kv) != 2:
@@ -181,7 +229,7 @@ def preflight_args() -> Namespace:
     parser.add_argument(
         "-i",
         "--image-version",
-        help="Image version",
+        help="Image version.",
         required=True,
         type=check_image_version_format,
     )

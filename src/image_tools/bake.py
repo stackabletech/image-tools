@@ -115,7 +115,7 @@ def bakefile_product_version_targets(
     """
     image_name = f"{args.registry}/{args.organization}/{product_name}"
     tags = build_image_tags(image_name, args.image_version, versions["product"])
-    build_args = build_image_args(versions, args.image_version)
+    build_args = build_image_args(versions, args.release)
     target_name = bakefile_target_name_for_product_version(product_name, versions["product"])
     rfc3339_date_time = datetime.now(timezone.utc).isoformat()
     revision = get_git_revision()
