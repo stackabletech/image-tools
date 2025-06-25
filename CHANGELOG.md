@@ -5,8 +5,10 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 - Add support for bake target hierarchies ([#51])
+- Add a separate `--release` argument for the SDP version ([#55])
 
 [#51]: https://github.com/stackabletech/image-tools/pull/51
+[#55]: https://github.com/stackabletech/image-tools/pull/55
 
 ## [0.0.14] - 2025-02-04
 
