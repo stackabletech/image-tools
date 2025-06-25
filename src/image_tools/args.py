@@ -233,13 +233,6 @@ def preflight_args() -> Namespace:
         required=True,
         type=check_image_version_format,
     )
-
-    parser.add_argument(
-        "--release",
-        help="SDP release version. Default: 0.0.0-dev.",
-        required=True,
-        type=check_release_format,
-    )
     parser.add_argument("-p", "--product", help="Product to build images for", required=True)
     parser.add_argument("-s", "--submit", help="Submit results", action="store_true")
     parser.add_argument("-d", "--dry", help="Dry run.", action="store_true")
