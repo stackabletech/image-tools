@@ -229,7 +229,7 @@ def preflight_args() -> Namespace:
     parser.add_argument(
         "-i",
         "--image-version",
-        help="Image version. Default: 0.0.0-dev.",
+        help="Image version.",
         required=True,
         type=check_image_version_format,
     )
